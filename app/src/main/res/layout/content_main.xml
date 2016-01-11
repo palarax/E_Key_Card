@@ -13,17 +13,46 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
+        android:id="@+id/tagID"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="you are a faggit and you know it!"
-        android:id="@+id/textView" />
+        android:text="@string/ID"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="25dp"
+        android:layout_alignParentStart="true"/>
 
     <TextView
-        android:id="@+id/accountID"
+        android:id="@+id/tagID_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="italic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/explanation"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="41dp" />
+        android:hint="@string/ID_text"
+        android:layout_alignBaseline="@+id/tagID"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/tagID" />
+
+    <TextView
+        android:id="@+id/techList"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tagID"
+        android:layout_alignEnd="@+id/tagID"
+        android:text="@string/tech"/>
+
+    <TextView
+        android:id="@+id/techList_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="italic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/tech_text"
+        android:layout_alignBaseline="@+id/techList"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/techList" />
+
 </RelativeLayout>

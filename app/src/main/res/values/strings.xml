@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">E_Key_card</string>
     <string name="action_settings">Settings</string>
-    <string name="explanation">account</string>
+    <string name="ID">Tag ID: </string>
+    <string name="ID_text"> identification number</string>
+    <string name="tech">Tech List: </string>
+    <string name="tech_text">technologies</string>
 </resources>

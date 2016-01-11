@@ -16,9 +16,14 @@ import android.nfc.NfcAdapter;
 
 import palarax.e_key_card.CardReader.nfcCardReader;
 
+/**
+ * @author Ilya Thai
+ */
+
 public class MainActivity extends AppCompatActivity implements nfcCardReader.AccountCallback  {
     private static final String TAG = MainActivity.class.getSimpleName(); //used for debugging
-    private TextView mTextView; //text box
+    private TextView idTextView; //ID text box
+    private TextView techTextView; //tech text box
 
     // Recommend NfcAdapter flags for reading from other Android devices. Indicates that this
     // activity is interested in NFC-A devices (including other Android devices), and that the
@@ -31,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements nfcCardReader.Acc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextView = (TextView) findViewById(R.id.accountID);
+        idTextView = (TextView) findViewById(R.id.tagID_text);
+        techTextView = (TextView) findViewById(R.id.techList_text);
 
         //creates a new cardReader object
         cardReader = new nfcCardReader(this);
@@ -82,16 +88,18 @@ public class MainActivity extends AppCompatActivity implements nfcCardReader.Acc
 
     //receives data after nfc card has been found
     @Override
-    public void onAccountReceived(final String account) {
+    public void onAccountReceived(final String ID, final String techList) {
         // This callback is run on a background thread, but updates to UI elements must be performed
         // on the UI thread.
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mTextView.setText(account);
+                idTextView.setText(ID);
+                techTextView.setText(techList);
             }
         });
     }
+
 
     @Override
     public void onPause() {

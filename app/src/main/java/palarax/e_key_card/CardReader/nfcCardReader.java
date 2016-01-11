@@ -12,32 +12,22 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
- * Created by Ithai on 8/01/2016.
+ * @author Ilya Thai
  */
 public class nfcCardReader implements NfcAdapter.ReaderCallback {
 
     private static final String TAG = "CardReader";
-    // AID (Application ID) for the E_KEY service
-    private static final String E_KEY_AID = "F222222222";
-
-    // ISO-DEP command HEADER for selecting an AID.
-    // Format: [Class | Instruction | Parameter 1 | Parameter 2]
-
-    private static final String SELECT_APDU_HEADER = "00A40400";
-
-    // "OK" status word sent in response to SELECT AID command (0x9000)
-    private static final byte[] SELECT_OK_SW = {(byte) 0x90, (byte) 0x00};
 
     // Weak reference to prevent retain loop. mAccountCallback is responsible for exiting
     // foreground mode before it becomes invalid (e.g. during onPause() or onStop()).
     private WeakReference<AccountCallback> mAccountCallback;
 
     public interface AccountCallback {
-        public void onAccountReceived(String account);
+         void onAccountReceived(String account, String techlist);
     }
 
     public nfcCardReader(AccountCallback accountCallback) {
-        mAccountCallback = new WeakReference<AccountCallback>(accountCallback);
+        mAccountCallback = new WeakReference<>(accountCallback);
     }
 
     /**
@@ -53,9 +43,8 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
         //NfcA nfca_tag = NfcA.get(tag);
         Log.e(TAG,tag.toString());
         Log.e(TAG,"Contents: "+tag.describeContents());
-        Log.e(TAG,"ID: "+bytesToHexString(tag.getId()));
-        Log.e(TAG, "Tech list: " + tag.getTechList());
-        mAccountCallback.get().onAccountReceived("ID: " + bytesToHexString(tag.getId()));
+        Log.e(TAG,"ID (hex): "+bytesToHexString(tag.getId()));
+        mAccountCallback.get().onAccountReceived(Long.toString(bytesToDec(tag.getId())),techList(tag));
 
        // new String(tag.getTechList(), Charset.forName("US-ASCII"))
         /*try{
@@ -73,20 +62,47 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
         }*/
     }
 
-    private String bytesToHexString(byte[] src) {
-        StringBuilder stringBuilder = new StringBuilder("0x");
-        if (src == null || src.length <= 0) {
-            return null;
+    /**
+     * Find all the technologies utilized by the {@code Tag}
+     * @param tag scanned tag
+     * @return list of technologies utilized by the tag
+     */
+    private String techList(Tag tag)
+    {
+        StringBuilder list= new StringBuilder();
+        String prefix = "android.nfc.tech."; //prefex of the tech
+        for (String tech : tag.getTechList()) {
+            list.append(tech.substring(prefix.length()));
+            list.append(", ");
         }
+        list.delete(list.length() - 2, list.length());
+        return list.toString();
+    }
 
-        char[] buffer = new char[2];
-        for (int i = 0; i < src.length; i++) {
-            buffer[0] = Character.forDigit((src[i] >>> 4) & 0x0F, 16);
-            buffer[1] = Character.forDigit(src[i] & 0x0F, 16);
-            System.out.println(buffer);
-            stringBuilder.append(buffer);
+    //bytes to Dec converter
+    private long bytesToDec(byte[] bytes) {
+        long result = 0;
+        long factor = 1;
+        for (byte aByte : bytes) {
+            long value = aByte & 0xffl;
+            result += value * factor;
+            factor *= 256l;
         }
+        return result;
+    }
 
-        return stringBuilder.toString();
+    //bytes to Hex converter
+    private String bytesToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = bytes.length - 1; i >= 0; --i) {
+            int b = bytes[i] & 0xff;
+            if (b < 0x10)
+                sb.append('0');
+            sb.append(Integer.toHexString(b));
+            if (i > 0) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
     }
 }
