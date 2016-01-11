@@ -2,14 +2,9 @@ package palarax.e_key_card.CardReader;
 
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.IsoDep;
-import android.nfc.tech.NfcA;
 import android.util.Log;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 
 /**
  * @author Ilya Thai
@@ -40,26 +35,10 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
     @Override
     public void onTagDiscovered(Tag tag) {
         Log.e(TAG, "New tag discovered");
-        //NfcA nfca_tag = NfcA.get(tag);
         Log.e(TAG,tag.toString());
         Log.e(TAG,"Contents: "+tag.describeContents());
         Log.e(TAG,"ID (hex): "+bytesToHexString(tag.getId()));
         mAccountCallback.get().onAccountReceived(Long.toString(bytesToDec(tag.getId())),techList(tag));
-
-       // new String(tag.getTechList(), Charset.forName("US-ASCII"))
-        /*try{
-            nfca_tag.connect();
-            Short s = nfca_tag.getSak();
-            byte[] a = nfca_tag.getAtqa();
-            String atqa = new String(a, Charset.forName("US-ASCII"));
-            Log.e(TAG, atqa);
-            nfca_tag.close();
-            mAccountCallback.get().onAccountReceived(atqa);
-        }
-        catch(Exception e){
-            Log.e(TAG, "Error when reading tag");
-            mAccountCallback.get().onAccountReceived("Error");
-        }*/
     }
 
     /**
@@ -79,7 +58,11 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
         return list.toString();
     }
 
-    //bytes to Dec converter
+    /**
+     * bytes to Dec converter
+     * @param bytes data in bytes
+     * @return data as a long
+     */
     private long bytesToDec(byte[] bytes) {
         long result = 0;
         long factor = 1;
@@ -91,7 +74,11 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
         return result;
     }
 
-    //bytes to Hex converter
+    /**
+     * bytes to Hex converter
+     * @param bytes data in bytes
+     * @return data in Hex returned as a string
+     */
     private String bytesToHexString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (int i = bytes.length - 1; i >= 0; --i) {

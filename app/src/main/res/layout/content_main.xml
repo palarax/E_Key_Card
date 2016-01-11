@@ -1,58 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="palarax.e_key_card.MainActivity"
-    tools:showIn="@layout/activity_main">
+    android:layout_gravity="center">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="palarax.e_key_card.MainActivity"
+        tools:showIn="@layout/app_bar_main">
 
-    <TextView
-        android:id="@+id/tagID"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ID"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="25dp"
-        android:layout_alignParentStart="true"/>
+        <TextView
+            android:id="@+id/home"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="25dp"
+            android:layout_alignParentStart="true"/>
 
-    <TextView
-        android:id="@+id/tagID_text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="italic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/ID_text"
-        android:layout_alignBaseline="@+id/tagID"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/tagID" />
-
-    <TextView
-        android:id="@+id/techList"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tagID"
-        android:layout_alignEnd="@+id/tagID"
-        android:text="@string/tech"/>
-
-    <TextView
-        android:id="@+id/techList_text"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="italic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/tech_text"
-        android:layout_alignBaseline="@+id/techList"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/techList" />
-
-</RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>
