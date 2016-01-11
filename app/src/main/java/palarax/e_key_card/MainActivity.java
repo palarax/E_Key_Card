@@ -25,6 +25,7 @@ import palarax.e_key_card.CardReader.nfcCard;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private static final String TAG = MainActivity.class.getSimpleName(); //used for debugging
 
+    private nfcCard fragment = new nfcCard();
     private DrawerLayout drawer;
 
     @Override
@@ -74,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.nav_manage) {
             //TODO: nfc scan ID and tech
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            nfcCard fragment = new nfcCard();
             transaction.replace(R.id.main_frag, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
