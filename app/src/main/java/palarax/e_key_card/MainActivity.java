@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_home) {
             // TODO: create a main screen
-            setTitle("Home");
+            setTitle("HOME");
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             MainFragment fragment = new MainFragment();
             transaction.replace(R.id.main_frag, fragment);
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.nav_scan) {
             //scan ID and tech
-            setTitle("Scan");
+            setTitle("SCAN");
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.main_frag, NFC_card_fragment);
             transaction.addToBackStack(null);
@@ -79,17 +79,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.nav_write) {
             // TODO: write to NFC card
-            setTitle("Write");
+            setTitle("WRITE");
         }
         else if (id == R.id.nav_manage) {
             // TODO: manage what the NFC card does
-            setTitle("Manage");
+            setTitle("MANAGE");
         }
         else if (id == R.id.nav_share) {
-            setTitle("Share");
+            setTitle("SHARE");
         }
         else if (id == R.id.nav_send) {
-            setTitle("Send");
+            setTitle("SEND");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.content_main, container, false);
-            getActivity().setTitle("Home");
             return rootView;
         }
     }
