@@ -25,7 +25,7 @@ import palarax.e_key_card.CardReader.nfcCard;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private static final String TAG = MainActivity.class.getSimpleName(); //used for debugging
 
-    private nfcCard fragment = new nfcCard();
+    private nfcCard NFC_card_fragment = new nfcCard();
     private DrawerLayout drawer;
 
     @Override
@@ -59,31 +59,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_main) {
-            // TODO: handle main menu
+        if (id == R.id.nav_home) {
+            // TODO: create a main screen
+            setTitle("Home");
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             MainFragment fragment = new MainFragment();
             transaction.replace(R.id.main_frag, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         }
-        else if (id == R.id.nav_gallery) {
-        }
-        else if (id == R.id.nav_slideshow) {
-
-        }
-        else if (id == R.id.nav_manage) {
-            //TODO: nfc scan ID and tech
+        else if (id == R.id.nav_scan) {
+            //scan ID and tech
+            setTitle("Scan");
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_frag, fragment);
+            transaction.replace(R.id.main_frag, NFC_card_fragment);
             transaction.addToBackStack(null);
+
             transaction.commit();
         }
+        else if (id == R.id.nav_write) {
+            // TODO: write to NFC card
+            setTitle("Write");
+        }
+        else if (id == R.id.nav_manage) {
+            // TODO: manage what the NFC card does
+            setTitle("Manage");
+        }
         else if (id == R.id.nav_share) {
-
+            setTitle("Share");
         }
         else if (id == R.id.nav_send) {
-
+            setTitle("Send");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.content_main, container, false);
-            getActivity().setTitle("Main");
+            getActivity().setTitle("Home");
             return rootView;
         }
     }
