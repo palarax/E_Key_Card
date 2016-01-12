@@ -18,7 +18,7 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
     private WeakReference<AccountCallback> mAccountCallback;
 
     public interface AccountCallback {
-         void onAccountReceived(String account, String techlist);
+         void onAccountReceived(Tag tag);
     }
 
     public nfcCardReader(AccountCallback accountCallback) {
@@ -35,44 +35,11 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
     @Override
     public void onTagDiscovered(Tag tag) {
         Log.e(TAG, "New tag discovered");
-        Log.e(TAG,tag.toString());
-        Log.e(TAG,"Contents: "+tag.describeContents());
-        Log.e(TAG,"ID (hex): "+bytesToHexString(tag.getId()));
-        mAccountCallback.get().onAccountReceived(Long.toString(bytesToDec(tag.getId())),techList(tag));
+        Log.e(TAG, "Contents: " + tag.describeContents());
+        Log.e(TAG, "ID (hex): " + bytesToHexString(tag.getId()));
+        mAccountCallback.get().onAccountReceived(tag);
     }
 
-    /**
-     * Find all the technologies utilized by the {@code Tag}
-     * @param tag scanned tag
-     * @return list of technologies utilized by the tag
-     */
-    private String techList(Tag tag)
-    {
-        StringBuilder list= new StringBuilder();
-        String prefix = "android.nfc.tech."; //prefex of the tech
-        for (String tech : tag.getTechList()) {
-            list.append(tech.substring(prefix.length()));
-            list.append(", ");
-        }
-        list.delete(list.length() - 2, list.length());
-        return list.toString();
-    }
-
-    /**
-     * bytes to Dec converter
-     * @param bytes data in bytes
-     * @return data as a long
-     */
-    private long bytesToDec(byte[] bytes) {
-        long result = 0;
-        long factor = 1;
-        for (byte aByte : bytes) {
-            long value = aByte & 0xffl;
-            result += value * factor;
-            factor *= 256l;
-        }
-        return result;
-    }
 
     /**
      * bytes to Hex converter

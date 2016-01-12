@@ -79,9 +79,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.nav_write) {
             // TODO: write to NFC card
+            //https://android.googlesource.com/platform/external/libnfc-nxp
             setTitle("WRITE");
         }
-        else if (id == R.id.nav_manage) {
+        else if (id == R.id.nav_card_emulate) {
+            // TODO: emulate NFC card
+            setTitle("Emulate Card");
+        }
+        else if (id == R.id.nav_manage_tags) {
             // TODO: manage what the NFC card does
             setTitle("MANAGE");
         }
@@ -141,8 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.content_main, container, false);
-            return rootView;
+            return inflater.inflate(R.layout.content_main, container, false);
         }
     }
 }
