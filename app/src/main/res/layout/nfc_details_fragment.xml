@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             android:text="@string/ID"
             android:textColor="@android:color/white"
-            android:layout_marginTop="30dp"
-            android:layout_marginStart="25dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginStart="60dp"
             android:layout_alignParentStart="true"/>
 
         <TextView
@@ -53,7 +53,6 @@
             android:layout_below="@+id/tagID"
             android:layout_alignEnd="@+id/tagID"
             android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
             android:text="@string/tech"/>
 
         <TextView
@@ -68,6 +67,30 @@
             android:layout_alignBaseline="@+id/techList"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/techList" />
+
+        <TextView
+            android:id="@+id/tagType"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tagType"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/techList"
+            android:layout_alignEnd="@+id/techList" />
+
+        <TextView
+            android:id="@+id/tagType_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/tagType_text"
+            android:layout_alignBaseline="@+id/tagType"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tagType" />
 
     </RelativeLayout>
 </FrameLayout>

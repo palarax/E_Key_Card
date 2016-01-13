@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import palarax.e_key_card.NFC_Tag_Tech.NdefTag;
+import palarax.e_key_card.NFC_Tag_Tech.nfcATag;
 import palarax.e_key_card.R;
 
 /**
@@ -54,6 +54,9 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         return v;
     }
 
+    /**
+     * Enables the devices to scan the tag
+     */
     private void enableReaderMode() {
         Log.i(TAG, "Enabling reader mode");
         Activity activity = getActivity(); //user defined fragment
@@ -63,6 +66,9 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         }
     }
 
+    /**
+     * Disables the devices to scan the tag
+     */
     private void disableReaderMode() {
         Log.i(TAG, "Disabling reader mode");
         Activity activity = getActivity();
@@ -72,18 +78,21 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         }
     }
 
-    //receives data after nfc card has been found
+    /**
+     * receives data after nfc card has been found
+     * @param tag tag scanned
+     */
     @Override
     public void onAccountReceived(Tag tag) {
+
         // This callback is run on a background thread, but updates to UI elements must be performed
         // on the UI thread.
-
-        //TODO: need to get tag type
         final String tech = techList(tag);
         final String ID = Long.toString(bytesToDec(tag.getId()));
+        Log.i(TAG,"Creating tag object");
+        nfcATag tag_nfcA = new nfcATag(tag);
+        final String type = tag_nfcA.getTagType();
 
-
-        Log.e(TAG,"ID: "+ID);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -91,9 +100,6 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
                 techTextView.setText(tech);
             }
         });
-        NdefTag ndefTag = new NdefTag();
-        Log.e(TAG,"Reading ndef");
-        ndefTag.readTag(tag);
     }
 
     /**

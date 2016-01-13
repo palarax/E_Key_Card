@@ -2,6 +2,10 @@ package palarax.e_key_card.NFC_Tag_Tech;
 
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
+import android.util.Log;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * @author Ilya Thai
@@ -35,6 +39,7 @@ public class IsoDepTag {
 
     public String readTag(Tag tag) {
         IsoDep tag_IsoDep = IsoDep.get(tag);
+
         /*
         try {
             mifare.connect();

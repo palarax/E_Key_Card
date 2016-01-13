@@ -3,10 +3,13 @@
     <string name="Email">Email: ilya.thai1@gmail.com</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Tag information  -->
     <string name="ID">Tag ID: </string>
-    <string name="ID_text"> identification number</string>
+    <string name="ID_text">identification number</string>
     <string name="tech">Tech List: </string>
     <string name="tech_text">technologies</string>
+    <string name="tagType">Tag type: </string>
+    <string name="tagType_text">type number</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
