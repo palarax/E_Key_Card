@@ -11,6 +11,10 @@
     <string name="tagType">Tag type: </string>
     <string name="tagType_text">type number</string>
 
+    <!-- Tag information  -->
+    <string name="tag_write">write here </string>
+
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -21,4 +25,7 @@
     <string name="nav_write">WRITE </string>
     <string name="nav_card_emulate"> CARDS </string>
 
+
+    <!--  Card emulation data -->
+    <string name="card_Sample">Card Sample </string>
 </resources>

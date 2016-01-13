@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +52,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.addToBackStack(null);
         transaction.commit();
 
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_frag, NFC_card_fragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -71,16 +78,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.nav_scan) {
             //scan ID and tech
             setTitle("SCAN");
+            try {
+                NFC_card_fragment.setViewLayout(R.layout.nfc_details_fragment);
+            }catch (Exception e){Log.i(TAG,"Scan/Write error on the first go"); }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.main_frag, NFC_card_fragment);
             transaction.addToBackStack(null);
-
             transaction.commit();
         }
         else if (id == R.id.nav_write) {
-            // TODO: write to NFC card
-            //https://android.googlesource.com/platform/external/libnfc-nxp
+            // TODO: finish write to NFC
             setTitle("WRITE");
+            try {
+                NFC_card_fragment.setViewLayout(R.layout.nfc_details_fragment);
+            }catch (Exception e){ }
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            NFC_card_fragment.setViewLayout(R.layout.nfc_write_fragment);
+            transaction.replace(R.id.main_frag, NFC_card_fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
         else if (id == R.id.nav_card_emulate) {
             // TODO: emulate NFC card

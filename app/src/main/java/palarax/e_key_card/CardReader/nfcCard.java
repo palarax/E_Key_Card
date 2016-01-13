@@ -1,6 +1,7 @@
 package palarax.e_key_card.CardReader;
 
 import android.app.Activity;
+import android.content.Context;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     public static final String TAG = "NFC_Card";
     private TextView idTextView; //ID text box
     private TextView techTextView; //tech text box
+    private TextView typeTextView; //manufacturer text box
+    private View mainView;
 
     // Recommend NfcAdapter flags for reading from other Android devices. Indicates that this
     // activity is interested in NFC-A devices (including other Android devices), and that the
@@ -42,16 +45,27 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.nfc_details_fragment, container, false);
-        idTextView = (TextView) v.findViewById(R.id.tagID_text);
-        techTextView = (TextView) v.findViewById(R.id.techList_text);
+        Log.e(TAG,"onCreateView");
+        mainView = inflater.inflate(R.layout.nfc_details_fragment, container, false);
+        idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
+        techTextView = (TextView) mainView.findViewById(R.id.techList_text);
+        typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
 
         //creates a new cardReader object
         cardReader = new nfcCardReader(this);
         // Disable Android Beam and register our card reader callback
         enableReaderMode();
 
-        return v;
+        return mainView;
+    }
+
+    public void setViewLayout(int id){
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mainView = inflater.inflate(id, ((ViewGroup)getView().getParent()), false);
+        ViewGroup rootView = (ViewGroup) getView();
+        rootView.removeAllViews();
+        rootView.addView(mainView);
     }
 
     /**
@@ -98,6 +112,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
             public void run() {
                 idTextView.setText(ID);
                 techTextView.setText(tech);
+                typeTextView.setText(type);
             }
         });
     }
