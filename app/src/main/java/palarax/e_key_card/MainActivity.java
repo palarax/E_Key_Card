@@ -1,5 +1,6 @@
 package palarax.e_key_card;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = MainActivity.class.getSimpleName(); //used for debugging
 
     private nfcCard NFC_card_fragment = new nfcCard();
-    private DrawerLayout drawer;
+    private MainFragment home_fragment = new MainFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         //create a drawer layout menu
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -49,61 +50,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         MainFragment fragment = new MainFragment();
         transaction.replace(R.id.main_frag, fragment);
-        transaction.addToBackStack(null);
         transaction.commit();
-
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_frag, NFC_card_fragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
-
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
             // TODO: create a main screen
             setTitle("HOME");
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            MainFragment fragment = new MainFragment();
-            transaction.replace(R.id.main_frag, fragment);
+            transaction.replace(R.id.main_frag, home_fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         }
         else if (id == R.id.nav_scan) {
             //scan ID and tech
             setTitle("SCAN");
+            //Set the correct layout since WRITE/SCAN are both using nfcCard
             try {
                 NFC_card_fragment.setViewLayout(R.layout.nfc_details_fragment);
-            }catch (Exception e){Log.i(TAG,"Scan/Write error on the first go"); }
+            }catch (Exception e){
+                Log.i(TAG,"Scan/Write error on the first go");
+                NFC_card_fragment.setviewID(R.layout.nfc_details_fragment);
+            }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.main_frag, NFC_card_fragment);
-            transaction.addToBackStack(null);
             transaction.commit();
         }
         else if (id == R.id.nav_write) {
             // TODO: finish write to NFC
             setTitle("WRITE");
+            //Set the correct layout since WRITE/SCAN are both using nfcCard
             try {
-                NFC_card_fragment.setViewLayout(R.layout.nfc_details_fragment);
-            }catch (Exception e){ }
+                NFC_card_fragment.setViewLayout(R.layout.nfc_write_fragment);
+            }catch (Exception e){
+                Log.i(TAG,"Scan/Write error on the first go");
+                NFC_card_fragment.setviewID(R.layout.nfc_write_fragment);
+            }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            NFC_card_fragment.setViewLayout(R.layout.nfc_write_fragment);
             transaction.replace(R.id.main_frag, NFC_card_fragment);
-            transaction.addToBackStack(null);
             transaction.commit();
         }
         else if (id == R.id.nav_card_emulate) {
             // TODO: emulate NFC card
-            setTitle("Emulate Card");
+            setTitle("CARD EMULATION");
         }
         else if (id == R.id.nav_manage_tags) {
             // TODO: manage what the NFC card does
+
             setTitle("MANAGE");
         }
         else if (id == R.id.nav_share) {
@@ -118,12 +117,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -162,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            getActivity().setTitle("HOME");
             return inflater.inflate(R.layout.content_main, container, false);
         }
     }

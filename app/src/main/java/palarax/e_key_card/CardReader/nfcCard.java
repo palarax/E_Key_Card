@@ -25,6 +25,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     private TextView techTextView; //tech text box
     private TextView typeTextView; //manufacturer text box
     private View mainView;
+    private int viewID;
 
     // Recommend NfcAdapter flags for reading from other Android devices. Indicates that this
     // activity is interested in NFC-A devices (including other Android devices), and that the
@@ -38,15 +39,13 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
      * Called when sample is created. Displays generic UI with welcome text.
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    public void onCreate(Bundle savedInstanceState) {super.onCreate(savedInstanceState);}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.e(TAG,"onCreateView");
-        mainView = inflater.inflate(R.layout.nfc_details_fragment, container, false);
+        mainView = inflater.inflate(viewID, container, false);
         idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
         techTextView = (TextView) mainView.findViewById(R.id.techList_text);
         typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
@@ -60,13 +59,19 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     }
 
     public void setViewLayout(int id){
-
+        viewID=id;
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(id, ((ViewGroup)getView().getParent()), false);
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(mainView);
     }
+
+    public void setviewID(int ID)
+    {
+        viewID=ID;
+    }
+
 
     /**
      * Enables the devices to scan the tag
