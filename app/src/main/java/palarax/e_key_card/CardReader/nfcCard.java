@@ -7,6 +7,7 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import palarax.e_key_card.NFC_Tag_Tech.nfcATag;
 import palarax.e_key_card.R;
+import palarax.e_key_card.adapters.CardObject;
+import palarax.e_key_card.adapters.RecyclerAdapter_Scroller;
 
 /**
  * @author Ilya Thai
@@ -30,6 +35,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     private ViewGroup rootView;     // "container" of where mainView is located
     private int viewID;             //ID of the view used
 
+    //Card and Recycler layout
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -46,16 +52,28 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
      * Called when sample is created. Displays generic UI with welcome text.
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {super.onCreate(savedInstanceState);}
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAdapter = new RecyclerAdapter_Scroller(getDataSet());
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.e(TAG,"onCreateView");
         mainView = inflater.inflate(viewID, container, false);
-        idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
-        techTextView = (TextView) mainView.findViewById(R.id.techList_text);
-        typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
+
+        if(viewID==R.layout.nfc_write_fragment) {
+            mRecyclerView = (RecyclerView) mainView.findViewById(R.id.my_recycler_view);
+            //mRecyclerView.setHasFixedSize(true);
+            //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mRecyclerView.setAdapter(mAdapter);
+        }
+            idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
+            techTextView = (TextView) mainView.findViewById(R.id.techList_text);
+            typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
+
 
         //creates a new cardReader object
         cardReader = new nfcCardReader(this);
@@ -79,10 +97,22 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         rootView.removeAllViews();
         rootView.addView(mainView);
 
-        //reset text boxes
-        idTextView = (TextView) rootView.findViewById(R.id.tagID_text);
-        techTextView = (TextView) rootView.findViewById(R.id.techList_text);
-        typeTextView = (TextView) rootView.findViewById(R.id.tagType_text);
+        /*
+        if(viewID == R.layout.nfc_write_fragment ) {
+        mAdapter = new RecyclerAdapter_Scroller(getDataSet());
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView = (RecyclerView) mainView.findViewById(R.id.my_recycler_view);
+            mRecyclerView.setHasFixedSize(true);
+            mLayoutManager = new LinearLayoutManager(getContext());
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+        }else
+        {
+            idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
+            techTextView = (TextView) mainView.findViewById(R.id.techList_text);
+            typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
+        }*/
+
     }
 
     /**
@@ -117,6 +147,17 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         if (nfc != null) {
             nfc.disableReaderMode(activity);
         }
+    }
+
+    private ArrayList<CardObject> getDataSet() {
+        //Replace this code with the scanned data
+        ArrayList results = new ArrayList<CardObject>();
+        for (int index = 0; index < 20; index++) {
+            CardObject obj = new CardObject("ID: " + index,
+                    "Type: " + index,"Tech: "+index);
+            results.add(index, obj);
+        }
+        return results;
     }
 
     /**
