@@ -1,8 +1,7 @@
 package palarax.e_key_card.adapters;
 
-import android.content.Context;
+
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,15 +34,28 @@ public class RecyclerAdapter_Scroller extends RecyclerView.Adapter<FeedCardHolde
         holder.ID.setText(feedItemList.get(position).getID());
         holder.tech.setText(feedItemList.get(position).getTech());
         holder.type.setText(feedItemList.get(position).getType());
-        Log.e(TAG, "CARD str: " + feedItemList.get(0).getType());
-        //view.setVisibility(View.INVISIBLE);
-        if(feedItemList.get(0).getID().equals("-1"))
+        if(feedItemList.get(position).getID().equals("-1"))
         {
             view.setVisibility(View.INVISIBLE);
         }else{
             view.setVisibility(View.VISIBLE);
         }
+    }
 
+    /**
+     * Checks if the card is already in the system
+     * @param ID ID of the card
+     * @return true if card exists
+     */
+    public boolean exists(String ID)
+    {
+        for(int position=0;position<getItemCount();position++)
+        {
+            if(feedItemList.get(position).getID().equals(ID)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addItem(CardObject dataObj, int index) {

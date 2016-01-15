@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -131,10 +132,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
      * sets the new view ID
      * @param ID view ID
      */
-    public void setviewID(int ID)
-    {
-        viewID=ID;
-    }
+    public void setviewID(int ID) {viewID=ID; }
 
 
     /**
@@ -172,19 +170,18 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         // on the UI thread.
         //String[] techList = tag.getTechList(); //list of all Tag techs
         final String tech = techList(tag);
-        final String ID = Long.toString(bytesToDec(tag.getId()));
+        final String ID = bytesToHexString(tag.getId());
         final nfcATag tag_nfcA = new nfcATag(tag);
         final String type = tag_nfcA.getTagType();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                cardInfo.addItem(new CardObject(ID,
-                        type, tech), index);
-                index++;
+                if(!cardInfo.exists(ID)) {
+                    cardInfo.addItem(new CardObject(ID,type, tech), index);
+                    index++;
+                }
             }
         });
-
-
 
         //Look through tech
 
@@ -231,6 +228,25 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
             factor *= 256l;
         }
         return result;
+    }
+
+    /**
+     * Converts bytes to hex string
+     * @param bytes bytes to be converted
+     * @return a string of hex values
+     */
+    private String bytesToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <= bytes.length - 1; i++) {
+            int b = bytes[i] & 0xff; //1111 1111
+            if (b < 0x10)
+                sb.append('0');
+            if (i > 0) {
+                sb.append(":");
+            }
+            sb.append(Integer.toHexString(b));
+        }
+        return sb.toString().toUpperCase();
     }
 
     @Override
