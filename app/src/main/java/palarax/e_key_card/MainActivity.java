@@ -1,6 +1,5 @@
 package palarax.e_key_card;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;

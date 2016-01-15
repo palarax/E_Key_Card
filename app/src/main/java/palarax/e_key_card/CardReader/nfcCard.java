@@ -34,11 +34,11 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     private View mainView;          //Main view displayed
     private ViewGroup rootView;     // "container" of where mainView is located
     private int viewID;             //ID of the view used
+    private RecyclerAdapter_Scroller cardInfo ;
+    private int index;
 
     //Card and Recycler layout
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
     // Recommend NfcAdapter flags for reading from other Android devices. Indicates that this
     // activity is interested in NFC-A devices (including other Android devices), and that the
@@ -53,9 +53,17 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        cardInfo = new RecyclerAdapter_Scroller(getDataSet());
+        index = 0;
         super.onCreate(savedInstanceState);
-        mAdapter = new RecyclerAdapter_Scroller(getDataSet());
+    }
 
+    private ArrayList<CardObject> getDataSet() {
+        //Replace this code with the scanned data
+        ArrayList results = new ArrayList<CardObject>();
+        CardObject obj = new CardObject("-1", "-1","-1");
+        results.add(0, obj);
+        return results;
     }
 
     @Override
@@ -63,24 +71,43 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
                              Bundle savedInstanceState) {
         Log.e(TAG,"onCreateView");
         mainView = inflater.inflate(viewID, container, false);
-
-        if(viewID==R.layout.nfc_write_fragment) {
-            mRecyclerView = (RecyclerView) mainView.findViewById(R.id.my_recycler_view);
-            //mRecyclerView.setHasFixedSize(true);
-            //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mRecyclerView.setAdapter(mAdapter);
-        }
-            idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
-            techTextView = (TextView) mainView.findViewById(R.id.techList_text);
-            typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
-
+        //choose view
+        choosingView(inflater, container);
 
         //creates a new cardReader object
         cardReader = new nfcCardReader(this);
+
         // Disable Android Beam and register our card reader callback
         enableReaderMode();
 
         return mainView;
+    }
+
+    /**
+     * choosing scan or write view, handles recycler view
+     * @param inflater inflate for the views
+     * @param container holds the view group
+     */
+    private void choosingView(LayoutInflater inflater, ViewGroup container)
+    {
+        if(viewID==R.layout.nfc_details_fragment) {
+
+            mainView = inflater.inflate(R.layout.nfc_details_fragment, container, false);
+            mRecyclerView = (RecyclerView) mainView.findViewById(R.id.recyclerList);
+            LinearLayoutManager llm = new LinearLayoutManager(getContext());
+            llm.setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(llm);
+            mRecyclerView.setAdapter(cardInfo);
+        }else if(viewID==R.layout.nfc_write_fragment)
+        {
+            mainView = inflater.inflate(R.layout.nfc_write_fragment, container, false);
+            idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
+            techTextView = (TextView) mainView.findViewById(R.id.techList_text);
+            typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
+
+        } else {
+            Log.e(TAG,"ViewID null");
+        }
     }
 
     /**
@@ -95,23 +122,8 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         mainView = inflater.inflate(id, ((ViewGroup)getView().getParent()), false);
         rootView = (ViewGroup) getView();
         rootView.removeAllViews();
+        choosingView(inflater, rootView);
         rootView.addView(mainView);
-
-        /*
-        if(viewID == R.layout.nfc_write_fragment ) {
-        mAdapter = new RecyclerAdapter_Scroller(getDataSet());
-            mRecyclerView.setAdapter(mAdapter);
-            mRecyclerView = (RecyclerView) mainView.findViewById(R.id.my_recycler_view);
-            mRecyclerView.setHasFixedSize(true);
-            mLayoutManager = new LinearLayoutManager(getContext());
-            mRecyclerView.setLayoutManager(mLayoutManager);
-
-        }else
-        {
-            idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
-            techTextView = (TextView) mainView.findViewById(R.id.techList_text);
-            typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
-        }*/
 
     }
 
@@ -149,17 +161,6 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         }
     }
 
-    private ArrayList<CardObject> getDataSet() {
-        //Replace this code with the scanned data
-        ArrayList results = new ArrayList<CardObject>();
-        for (int index = 0; index < 20; index++) {
-            CardObject obj = new CardObject("ID: " + index,
-                    "Type: " + index,"Tech: "+index);
-            results.add(index, obj);
-        }
-        return results;
-    }
-
     /**
      * receives data after nfc card has been found
      * @param tag tag scanned
@@ -169,21 +170,20 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         Log.i(TAG,"AccountReceived");
         // This callback is run on a background thread, but updates to UI elements must be performed
         // on the UI thread.
-        String[] techList = tag.getTechList(); //list of all Tag techs
-
+        //String[] techList = tag.getTechList(); //list of all Tag techs
         final String tech = techList(tag);
         final String ID = Long.toString(bytesToDec(tag.getId()));
-        nfcATag tag_nfcA = new nfcATag(tag);
+        final nfcATag tag_nfcA = new nfcATag(tag);
         final String type = tag_nfcA.getTagType();
-
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                idTextView.setText(ID);
-                techTextView.setText(tech);
-                typeTextView.setText(type);
+                cardInfo.addItem(new CardObject(ID,
+                        type, tech), index);
+                index++;
             }
         });
+
 
 
         //Look through tech

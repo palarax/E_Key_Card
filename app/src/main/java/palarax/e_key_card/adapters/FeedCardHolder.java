@@ -10,9 +10,10 @@ import palarax.e_key_card.R;
  * @author Ilya Thai
  */
 public class FeedCardHolder extends RecyclerView.ViewHolder {
-    public TextView ID;
-    public TextView tech;
-    public TextView type;
+    protected TextView ID;
+    protected TextView tech;
+    protected TextView type;
+
 
     public FeedCardHolder(View view) {
         super(view);
