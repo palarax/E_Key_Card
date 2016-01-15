@@ -30,7 +30,9 @@
         android:id="@+id/main_frag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/panelTop"
-        />
+        android:layout_below="@id/panelTop">
+
+    </FrameLayout>
+
 </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

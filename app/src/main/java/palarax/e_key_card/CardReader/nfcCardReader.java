@@ -1,10 +1,18 @@
 package palarax.e_key_card.CardReader;
 
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.Ndef;
+import android.nfc.tech.NdefFormatable;
+import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 /**
  * @author Ilya Thai
@@ -37,5 +45,7 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
         Log.e(TAG, "New tag discovered");
         mAccountCallback.get().onAccountReceived(tag);
     }
+
+
 
 }

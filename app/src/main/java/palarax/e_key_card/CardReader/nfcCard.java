@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +24,15 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
 
     public static final String TAG = "NFC_Card";
     private TextView idTextView; //ID text box
-    private TextView techTextView; //tech text box
+    public TextView techTextView; //tech text box
     private TextView typeTextView; //manufacturer text box
-    private View mainView;
-    ViewGroup rootView;
-    private int viewID;
+    private View mainView;          //Main view displayed
+    private ViewGroup rootView;     // "container" of where mainView is located
+    private int viewID;             //ID of the view used
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     // Recommend NfcAdapter flags for reading from other Android devices. Indicates that this
     // activity is interested in NFC-A devices (including other Android devices), and that the
@@ -122,6 +128,8 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         Log.i(TAG,"AccountReceived");
         // This callback is run on a background thread, but updates to UI elements must be performed
         // on the UI thread.
+        String[] techList = tag.getTechList(); //list of all Tag techs
+
         final String tech = techList(tag);
         final String ID = Long.toString(bytesToDec(tag.getId()));
         nfcATag tag_nfcA = new nfcATag(tag);
@@ -135,6 +143,20 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
                 typeTextView.setText(type);
             }
         });
+
+
+        //Look through tech
+
+        String searchedTech = Ndef.class.getName();
+
+        /*for (String tech : techList) {
+            if (searchedTech.equals(tech)) {
+                Log.e(TAG, "Tech");
+                //new Ndef().execute(tag);
+                break;
+            }
+        }*/
+
     }
 
     /**

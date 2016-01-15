@@ -51,7 +51,7 @@ public class nfcATag{
 
 
     //The primary NFC-A I/O operation is transceive(byte[])
-    //TODO: finish nfcA Tag transcieve
+    //TODO: finish nfcA Tag transceiver
     public void transceiveTag(Tag tag, String tagText)
     {
         NfcA tag_nfcA = NfcA.get(tag);

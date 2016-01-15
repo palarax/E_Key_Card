@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-
+        //TODO: change navigation format to case method
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
