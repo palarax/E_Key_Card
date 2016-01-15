@@ -35,28 +35,7 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
     @Override
     public void onTagDiscovered(Tag tag) {
         Log.e(TAG, "New tag discovered");
-        Log.e(TAG, "Contents: " + tag.describeContents());
-        Log.e(TAG, "ID (hex): " + bytesToHexString(tag.getId()));
         mAccountCallback.get().onAccountReceived(tag);
     }
 
-
-    /**
-     * bytes to Hex converter
-     * @param bytes data in bytes
-     * @return data in Hex returned as a string
-     */
-    private String bytesToHexString(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = bytes.length - 1; i >= 0; --i) {
-            int b = bytes[i] & 0xff;
-            if (b < 0x10)
-                sb.append('0');
-            sb.append(Integer.toHexString(b));
-            if (i > 0) {
-                sb.append(" ");
-            }
-        }
-        return sb.toString();
-    }
 }

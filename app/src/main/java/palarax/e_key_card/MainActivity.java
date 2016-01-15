@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //Set the correct layout since WRITE/SCAN are both using nfcCard
             try {
                 NFC_card_fragment.setViewLayout(R.layout.nfc_details_fragment);
+
             }catch (Exception e){
                 Log.i(TAG,"Scan/Write error on the first go");
                 NFC_card_fragment.setviewID(R.layout.nfc_details_fragment);

@@ -29,14 +29,14 @@ public class nfcATag{
             tag_nfcA.close();
         }
         catch(Exception e) {
-            Log.e(TAG, "Error when reading tag: "+e);
+            Log.i(TAG, "Error when reading tag: "+e);
         }
     }
 
     private String getSampleType(String SAK)
     {
         String unknownTypeString = "Unknown type";
-        Log.e(TAG,"getting sample");
+        Log.i(TAG,"getting sample");
         return SampleTagAttributes.lookup(SAK,unknownTypeString); //looks up if app knows the type
     }
 

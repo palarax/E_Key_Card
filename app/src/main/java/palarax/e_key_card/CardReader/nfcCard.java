@@ -25,6 +25,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     private TextView techTextView; //tech text box
     private TextView typeTextView; //manufacturer text box
     private View mainView;
+    ViewGroup rootView;
     private int viewID;
 
     // Recommend NfcAdapter flags for reading from other Android devices. Indicates that this
@@ -58,15 +59,30 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         return mainView;
     }
 
+    /**
+     * sets the view of the selected menu item ( scan or write)
+     * @param id ID of the view
+     */
     public void setViewLayout(int id){
+        Log.e(TAG, "setting view");
         viewID=id;
+        //create a root view to change the main view
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(id, ((ViewGroup)getView().getParent()), false);
-        ViewGroup rootView = (ViewGroup) getView();
+        rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(mainView);
+
+        //reset text boxes
+        idTextView = (TextView) rootView.findViewById(R.id.tagID_text);
+        techTextView = (TextView) rootView.findViewById(R.id.techList_text);
+        typeTextView = (TextView) rootView.findViewById(R.id.tagType_text);
     }
 
+    /**
+     * sets the new view ID
+     * @param ID view ID
+     */
     public void setviewID(int ID)
     {
         viewID=ID;
@@ -103,12 +119,11 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
      */
     @Override
     public void onAccountReceived(Tag tag) {
-
+        Log.i(TAG,"AccountReceived");
         // This callback is run on a background thread, but updates to UI elements must be performed
         // on the UI thread.
         final String tech = techList(tag);
         final String ID = Long.toString(bytesToDec(tag.getId()));
-        Log.i(TAG,"Creating tag object");
         nfcATag tag_nfcA = new nfcATag(tag);
         final String type = tag_nfcA.getTagType();
 
