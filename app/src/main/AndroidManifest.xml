@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="palarax.e_key_card"
     android:versionCode="1"
-    android:versionName="beta 0.4"
+    android:versionName="beta 0.5"
     android:installLocation="auto">
+
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>

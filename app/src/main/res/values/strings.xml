@@ -24,6 +24,7 @@
     <string name="nav_manage_tags">MANAGE </string>
     <string name="nav_write">WRITE </string>
     <string name="nav_card_emulate"> CARDS </string>
+    <string name="nav_qr">QR code</string>
 
 
     <!--  Card emulation data -->
