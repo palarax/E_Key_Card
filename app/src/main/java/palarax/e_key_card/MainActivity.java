@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainFragment home_fragment = new MainFragment();
     private QrScannerActivity QR_scanner = new QrScannerActivity();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,19 +120,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case  R.id.nav_qr:
                     // TODO: do a QR activity
                     setTitle("QR CODE");
-                    //Set the correct layout since WRITE/SCAN are both using nfcCard
+                transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_frag, QR_scanner);
+                transaction.commit();
 
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.main_frag,QR_scanner);
-                    transaction.commit();
-                    break;
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
 
     @Override
