@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/barcode_header"
+            android:textColor="@color/white"
             android:id="@+id/status_message"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -28,43 +29,148 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:hint="hint"
+            android:textColorHint="@color/white"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/barcode_value"
-            android:layout_below="@+id/status_message"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="110dp"
-            android:layout_alignRight="@+id/status_message"
-            android:layout_alignEnd="@+id/status_message" />
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="100dp" />
+
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/read_barcode"
-            android:id="@+id/read_barcode"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:drawableLeft="@mipmap/ic_qrcode_scan"
+            android:background="@drawable/read_barcode_btn"
+            android:text="@string/create_barcode"
+            android:textSize="12sp"
+            android:drawablePadding="10dp"
+            android:layout_above="@+id/seperator"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/create_barcode" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
+        <View
+            android:layout_width="match_parent"
+            android:id="@+id/seperator"
+            android:layout_height="2dp"
+            android:layout_marginBottom="10dp"
+            android:layout_above="@+id/read_barcode"
+            android:background="@color/pink_700"/>
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/qr_image_btn"
+            android:background="@drawable/read_barcode_btn"
+            android:text="@string/read_barcode"
+            android:textSize="12sp"
+            android:drawablePadding="10dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/read_barcode"/>
+
+        <TextView
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="@string/auto_focus"
-            android:id="@+id/auto_focus"
-            android:layout_below="@+id/barcode_value"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="66dp"
-            android:checked="false" />
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:layout_above="@+id/toggle_focus"
+            android:layout_centerInParent="true" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:checkedButton="@+id/off_focus"
+            android:layout_centerInParent="true"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/toggle_focus"
+            android:textAlignment="textStart"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:background="@drawable/toggle_switch_outline"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:id="@+id/auto_focus"
+                android:background="@drawable/toggle_switch_background"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/on"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:id="@+id/off_focus"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_switch_background"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/off"
+                android:textColor="@color/white" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="@string/use_flash"
-            android:id="@+id/use_flash"
-            android:layout_alignTop="@+id/auto_focus"
-            android:layout_alignParentRight="true"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:layout_above="@+id/toggle_focus"
+            android:layout_alignParentEnd="true" />
+
+        <RadioGroup
+            android:checkedButton="@+id/off_flash"
             android:layout_alignParentEnd="true"
-            android:checked="false" />
+            android:layout_alignParentBottom="true"
+            android:id="@+id/toggle_flash"
+            android:textAlignment="textStart"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:background="@drawable/toggle_switch_outline"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:id="@+id/use_flash"
+                android:background="@drawable/toggle_switch_background"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/on"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:id="@+id/off_flash"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_switch_background"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/off"
+                android:textColor="@color/white" />
+        </RadioGroup>
 
     </RelativeLayout>
 
