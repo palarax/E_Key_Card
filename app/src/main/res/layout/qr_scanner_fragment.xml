@@ -2,6 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:layout_gravity="center">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -19,37 +20,66 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/barcode_header"
+            android:hint="@string/barcode_header"
+            android:textColorHint="@color/white"
             android:textColor="@color/white"
             android:id="@+id/status_message"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerHorizontal="true" />
 
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:hint="hint"
             android:textColorHint="@color/white"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/barcode_value"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
-            android:layout_marginTop="100dp" />
+            android:layout_marginTop="100dp"
+            />
 
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_below="@+id/barcode_value"
+            android:layout_centerInParent="true"
+            android:id="@+id/barcode"/>
+
+        <Spinner
+            android:textColor="@android:color/white"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:layout_above="@+id/seperator"
+            android:id="@+id/barcode_type" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:hint="@string/encode_hint"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAlignment="center"
+            android:background="@drawable/rounded_edittext"
+            android:id="@+id/encode_value"
+            android:layout_above="@+id/seperator"
+            android:layout_toEndOf="@+id/barcode_type"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="30dp" />
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="125dp"
             android:layout_height="50dp"
             android:drawableLeft="@mipmap/ic_qrcode_scan"
             android:background="@drawable/read_barcode_btn"
-            android:text="@string/create_barcode"
+            android:text="@string/generate_barcode"
             android:textSize="12sp"
             android:drawablePadding="10dp"
-            android:layout_above="@+id/seperator"
+            android:layout_above="@+id/barcode_type"
             android:layout_marginBottom="10dp"
-            android:id="@+id/create_barcode" />
+            android:id="@+id/generate_barcode" />
 
         <View
             android:layout_width="match_parent"
@@ -58,6 +88,8 @@
             android:layout_marginBottom="10dp"
             android:layout_above="@+id/read_barcode"
             android:background="@color/pink_700"/>
+
+
 
         <Button
             android:layout_width="120dp"
@@ -171,6 +203,7 @@
                 android:text="@string/off"
                 android:textColor="@color/white" />
         </RadioGroup>
+
 
     </RelativeLayout>
 

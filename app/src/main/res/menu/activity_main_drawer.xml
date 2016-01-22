@@ -19,13 +19,13 @@
             android:icon="@mipmap/ic_create_black_24dp"
             android:title="@string/nav_write" />
         <item
-            android:id="@+id/nav_manage_tags"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/nav_manage_tags" />
-        <item
             android:id="@+id/nav_qr"
             android:icon="@mipmap/ic_qrcode_scan"
             android:title="@string/nav_qr" />
+        <item
+            android:id="@+id/nav_manage_tags"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/nav_manage_tags" />
     </group>
 
     <item android:title="Communicate">
@@ -34,10 +34,6 @@
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
         </menu>
     </item>
 

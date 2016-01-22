@@ -113,18 +113,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     setTitle("MANAGE");
                     break;
 
-            case  R.id.nav_share:
-                    setTitle("SHARE");
-                    break;
-
             case  R.id.nav_qr:
-                    // TODO: do a QR activity
-                    setTitle("QR CODE");
-                transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_frag, QR_scanner);
-                transaction.commit();
 
-                break;
+                    setTitle("QR CODE");
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_frag, QR_scanner);
+                    transaction.commit();
+                    break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
