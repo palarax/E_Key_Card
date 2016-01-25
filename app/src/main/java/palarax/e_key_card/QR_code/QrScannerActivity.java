@@ -105,7 +105,7 @@ public class QrScannerActivity extends Fragment implements View.OnClickListener 
             //QRCodeWriter writer = new QRCodeWriter();
             com.google.zxing. MultiFormatWriter writer =new MultiFormatWriter();
             try {
-                matrix = writer.encode(encodedValue.getText().toString(), getBarcodeType() , 200, 200);
+                matrix = writer.encode(encodedValue.getText().toString(), getBarcodeType() , 300, 300);
             } catch (Exception e) {
                 String error = ""+e;
                 String str = error.split(":")[1];
@@ -141,7 +141,7 @@ public class QrScannerActivity extends Fragment implements View.OnClickListener 
         Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
         for (int x = 0; x < width; x++){
             for (int y = 0; y < height; y++){
-                bmp.setPixel(x, y, matrix.get(x,y) ? Color.MAGENTA : Color.TRANSPARENT);
+                bmp.setPixel(x, y, matrix.get(x,y) ? Color.BLACK : Color.WHITE);
             }
         }
         return bmp;

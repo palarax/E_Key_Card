@@ -13,6 +13,8 @@ public class FeedCardHolder extends RecyclerView.ViewHolder {
     protected TextView ID;
     protected TextView tech;
     protected TextView type;
+    protected TextView message;
+    protected TextView size;
 
 
     public FeedCardHolder(View view) {
@@ -20,5 +22,7 @@ public class FeedCardHolder extends RecyclerView.ViewHolder {
         this.ID = (TextView) view.findViewById(R.id.tagID_text);
         this.tech = (TextView) view.findViewById(R.id.techList_text);
         this.type = (TextView) view.findViewById(R.id.tagType_text);
+        this.message = (TextView) view.findViewById(R.id.tagMessage_text);
+        this.size = (TextView) view.findViewById(R.id.tagSize_text);
     }
 }

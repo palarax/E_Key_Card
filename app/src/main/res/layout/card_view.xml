@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ID"
             android:textColor="@android:color/white"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="30dp"
             android:layout_marginStart="60dp"
             android:layout_alignParentStart="true"/>
 
@@ -84,6 +84,54 @@
             android:layout_alignBaseline="@+id/tagType"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/tagType" />
+
+        <TextView
+            android:id="@+id/tagMessage"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tagMessage"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/tagType"
+            android:layout_alignEnd="@+id/tagType" />
+
+        <TextView
+            android:id="@+id/tagMessage_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/tagMessage_text"
+            android:layout_alignBaseline="@+id/tagMessage"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tagMessage" />
+
+        <TextView
+            android:id="@+id/tagSize"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tagSize"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/tagMessage"
+            android:layout_alignEnd="@+id/tagMessage" />
+
+        <TextView
+            android:id="@+id/tagSize_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/tagSize_text"
+            android:layout_marginStart="10dp"
+            android:layout_alignBaseline="@+id/tagSize"
+            android:layout_toEndOf="@+id/tagSize" />
 
 
     </RelativeLayout>

@@ -7,11 +7,31 @@ public class CardObject {
     private String ID;
     private String type;
     private String tech;
+    private String msg;
+    private String size;
 
-    public CardObject (String ID, String type, String tech){
+    public CardObject (String ID, String type, String tech, String msg, String size){
         this.ID = ID;
         this.type = type;
         this.tech = tech;
+        this.msg = msg;
+        this.size = size;
+    }
+
+    public String getSize() {
+        return this.size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getMsg() {
+        return this.msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public String getID() {

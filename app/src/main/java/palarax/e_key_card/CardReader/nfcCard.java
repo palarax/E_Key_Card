@@ -13,11 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import palarax.e_key_card.NFC_Tag_Tech.NdefTag;
 import palarax.e_key_card.NFC_Tag_Tech.nfcATag;
 import palarax.e_key_card.R;
 import palarax.e_key_card.adapters.CardObject;
@@ -29,14 +31,14 @@ import palarax.e_key_card.adapters.RecyclerAdapter_Scroller;
 public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
 
     public static final String TAG = "NFC_Card";
-    private TextView idTextView; //ID text box
-    public TextView techTextView; //tech text box
-    private TextView typeTextView; //manufacturer text box
+    EditText writeNFCmessage; //message to be written
     private View mainView;          //Main view displayed
     private ViewGroup rootView;     // "container" of where mainView is located
     private int viewID;             //ID of the view used
     private RecyclerAdapter_Scroller cardInfo ;
     private int index;
+    private boolean writeToNFC = false; //boolean to check if a message is ready to be sent
+    private Button nfcWriteBtn; //write button
 
     //Card and Recycler layout
     private RecyclerView mRecyclerView;
@@ -56,13 +58,14 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     public void onCreate(Bundle savedInstanceState) {
         cardInfo = new RecyclerAdapter_Scroller(getDataSet());
         index = 0;
+        cardInfo.clearAll();
         super.onCreate(savedInstanceState);
     }
 
     private ArrayList<CardObject> getDataSet() {
         //Replace this code with the scanned data
         ArrayList results = new ArrayList<CardObject>();
-        CardObject obj = new CardObject("-1", "-1","-1");
+        CardObject obj = new CardObject("-1", "-1","-1","-1","-1");
         results.add(0, obj);
         return results;
     }
@@ -102,14 +105,21 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         }else if(viewID==R.layout.nfc_write_fragment)
         {
             mainView = inflater.inflate(R.layout.nfc_write_fragment, container, false);
-            idTextView = (TextView) mainView.findViewById(R.id.tagID_text);
-            techTextView = (TextView) mainView.findViewById(R.id.techList_text);
-            typeTextView = (TextView) mainView.findViewById(R.id.tagType_text);
+            writeNFCmessage = (EditText) mainView.findViewById(R.id.writeNFC);
+            nfcWriteBtn = (Button) mainView.findViewById(R.id.writeNFCbtn);
+            nfcWriteBtn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Perform action on click
+                    writeToNFC = true;
+                    Toast.makeText(getContext(), "Waiting for tag", Toast.LENGTH_LONG).show();
+                }
+            });
 
         } else {
             Log.e(TAG,"ViewID null");
         }
     }
+
 
     /**
      * sets the view of the selected menu item ( scan or write)
@@ -168,33 +178,73 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         Log.i(TAG,"AccountReceived");
         // This callback is run on a background thread, but updates to UI elements must be performed
         // on the UI thread.
-        //String[] techList = tag.getTechList(); //list of all Tag techs
-        final String tech = techList(tag);
-        final String ID = bytesToHexString(tag.getId());
-        final nfcATag tag_nfcA = new nfcATag(tag);
-        final String type = tag_nfcA.getTagType();
+
+        String[] techList = tag.getTechList(); //list of all Tag techs
+
+        String tech = techList(tag);
+        String ID = bytesToHexString(tag.getId());
+        nfcATag tag_nfcA = new nfcATag(tag);
+        String type = tag_nfcA.getTagType();
+        String message = "";
+        String tagSize = "";
+        //Look through tech
+
+
+        for (String singleTech : techList) {
+            if (singleTech.equals(Ndef.class.getName())) {
+                Log.e(TAG, "Tech have spoken");
+                NdefTag ndef = new NdefTag();
+                tagSize = ndef.getSize(tag);
+                try {
+                    if (writeToNFC) {
+                        //write message
+                        Log.e(TAG,"Write enabled");
+                        if(ndef.writeMessage(writeNFCmessage.getText().toString(), tag))
+                        {
+                            Toast.makeText(getContext(),"Message write successful",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        Toast.makeText(getContext(),"Message write fail",
+                                Toast.LENGTH_SHORT).show();
+
+                    }
+                }catch (Exception e){ Log.i(TAG,"Exception: "+e);}
+                writeToNFC=false;
+                Log.e(TAG,"SIZE: "+tagSize);
+                message =  ndef.read(tag);
+                break;
+            }
+        }
+        //update information
+
+        updateCard(message, ID, tech, type, tagSize);
+
+    }
+
+    public void updateCard(String message,String identification, String technology, String tagType, String tagSize)
+    {
+        final String tech = technology;
+        final String ID = identification;
+        final String type = tagType;
+        final String msg = message;
+        final String size = tagSize;
+
+        //Update information
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(!cardInfo.exists(ID)) {
-                    cardInfo.addItem(new CardObject(ID,type, tech), index);
+                int position = cardInfo.exists(ID);
+                if (position == -2) {
+                    //doest the card exist
+                    cardInfo.addItem(new CardObject(ID, type, tech, msg, size), index);
                     index++;
+                } else {
+                    //update object
+                    cardInfo.updateCard(position, ID, msg, tech, type, size);
+                    cardInfo.notifyDataSetChanged();
                 }
             }
         });
-
-        //Look through tech
-
-        String searchedTech = Ndef.class.getName();
-
-        /*for (String tech : techList) {
-            if (searchedTech.equals(tech)) {
-                Log.e(TAG, "Tech");
-                //new Ndef().execute(tag);
-                break;
-            }
-        }*/
-
     }
 
     /**
@@ -213,6 +263,9 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         list.delete(list.length() - 2, list.length());
         return list.toString();
     }
+
+
+
 
     /**
      * bytes to Dec converter
@@ -260,6 +313,5 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         super.onResume();
         enableReaderMode();
     }
-
 
 }

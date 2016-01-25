@@ -17,80 +17,32 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="palarax.e_key_card.MainActivity"
-        tools:showIn="@layout/app_bar_main">
+        tools:showIn="@layout/app_bar_main"
+        android:nestedScrollingEnabled="false"
+        android:onClick="setContentView">
 
-        <TextView
-            android:id="@+id/tagID"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ID"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="100dp"
-            android:layout_marginStart="60dp"
-            android:layout_alignParentStart="true"/>
+        <Button
+            android:id="@+id/writeNFCbtn"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:drawableLeft="@mipmap/ic_qrcode_scan"
+            android:background="@drawable/read_barcode_btn"
+            android:text="@string/tag_write"
+            android:textSize="12sp"
+            android:drawablePadding="10dp"
+            android:layout_marginBottom="10dp" />
 
-        <TextView
-            android:id="@+id/tagID_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="italic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
-            android:hint="@string/ID_text"
-            android:layout_alignBaseline="@+id/tagID"
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAlignment="center"
+            android:background="@drawable/rounded_edittext"
+            android:id="@+id/writeNFC"
+            android:layout_toEndOf="@+id/writeNFCbtn"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/tagID" />
-
-        <TextView
-            android:id="@+id/techList"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tagID"
-            android:layout_alignEnd="@+id/tagID"
-            android:textColor="@android:color/white"
-            android:text="@string/tech"/>
-
-        <TextView
-            android:id="@+id/techList_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="italic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
-            android:hint="@string/tech_text"
-            android:layout_alignBaseline="@+id/techList"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/techList" />
-
-        <TextView
-            android:id="@+id/tagType"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tagType"
-            android:textColor="@android:color/white"
-            android:layout_below="@+id/techList"
-            android:layout_alignEnd="@+id/techList" />
-
-        <TextView
-            android:id="@+id/tagType_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="italic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
-            android:hint="@string/tagType_text"
-            android:layout_alignBaseline="@+id/tagType"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/tagType" />
+            android:layout_marginBottom="30dp" />
 
     </RelativeLayout>
 </FrameLayout>

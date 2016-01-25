@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case  R.id.nav_scan:
                     //scan ID and tech
+                    //TODO: add a clear button
                     setTitle("SCAN");
                     //Set the correct layout since WRITE/SCAN are both using nfcCard
                     try {
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case  R.id.nav_qr:
 
-                    setTitle("QR CODE");
+                    setTitle("BARCODE FUNCTION");
                     transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_frag, QR_scanner);
                     transaction.commit();
