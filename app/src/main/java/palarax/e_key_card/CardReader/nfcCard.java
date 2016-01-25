@@ -2,11 +2,13 @@ package palarax.e_key_card.CardReader;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -111,13 +112,45 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
                 public void onClick(View v) {
                     // Perform action on click
                     writeToNFC = true;
-                    Toast.makeText(getContext(), "Waiting for tag", Toast.LENGTH_LONG).show();
+                   alertBox(true);
+
                 }
             });
 
         } else {
             Log.e(TAG,"ViewID null");
         }
+
+    }
+
+    //FormulaDialog mFormulaDialog = new FormulaDialog(getContext());
+
+
+    private void alertBox(boolean cancel)
+    {
+        if(cancel) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Waiting for tag")
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            writeToNFC = false;
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }else
+        {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Tag found")
+                    .setNegativeButton("complete", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            writeToNFC = false;
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
     }
 
 
@@ -188,8 +221,6 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         String message = "";
         String tagSize = "";
         //Look through tech
-
-
         for (String singleTech : techList) {
             if (singleTech.equals(Ndef.class.getName())) {
                 Log.e(TAG, "Tech have spoken");
@@ -197,18 +228,13 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
                 tagSize = ndef.getSize(tag);
                 try {
                     if (writeToNFC) {
-                        //write message
-                        Log.e(TAG,"Write enabled");
-                        if(ndef.writeMessage(writeNFCmessage.getText().toString(), tag))
-                        {
-                            Toast.makeText(getContext(),"Message write successful",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        Toast.makeText(getContext(),"Message write fail",
-                                Toast.LENGTH_SHORT).show();
+                        //write
 
+                        Log.e(TAG, "Write enabled");
+                        ndef.writeMessage(writeNFCmessage.getText().toString(), tag);
                     }
                 }catch (Exception e){ Log.i(TAG,"Exception: "+e);}
+                alertBox(false);
                 writeToNFC=false;
                 Log.e(TAG,"SIZE: "+tagSize);
                 message =  ndef.read(tag);
@@ -264,24 +290,6 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         return list.toString();
     }
 
-
-
-
-    /**
-     * bytes to Dec converter
-     * @param bytes data in bytes
-     * @return data as a long
-     */
-    private long bytesToDec(byte[] bytes) {
-        long result = 0;
-        long factor = 1;
-        for (byte aByte : bytes) {
-            long value = aByte & 0xffl;
-            result += value * factor;
-            factor *= 256l;
-        }
-        return result;
-    }
 
     /**
      * Converts bytes to hex string

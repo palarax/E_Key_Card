@@ -48,6 +48,7 @@
 
     <!-- Tag information  -->
     <string name="tag_write">write here </string>
+    <string name="write_cancel">cancel</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
