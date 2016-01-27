@@ -22,13 +22,25 @@
         android:onClick="setContentView">
 
         <Button
-            android:id="@+id/writeNFCbtn"
-            android:layout_width="125dp"
+            android:id="@+id/overwriteNFCbtn"
+            android:layout_width="130dp"
             android:layout_height="50dp"
             android:drawableLeft="@mipmap/ic_qrcode_scan"
             android:background="@drawable/read_barcode_btn"
-            android:text="@string/tag_write"
+            android:text="@string/tag_overwrite"
             android:textSize="12sp"
+            android:drawablePadding="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/writeRecordBtn"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:drawableLeft="@mipmap/ic_qrcode_scan"
+            android:background="@drawable/read_barcode_btn"
+            android:text="@string/tag_record_write"
+            android:textSize="12sp"
+            android:layout_below="@+id/overwriteNFCbtn"
             android:drawablePadding="10dp"
             android:layout_marginBottom="10dp" />
 
@@ -40,7 +52,7 @@
             android:textAlignment="center"
             android:background="@drawable/rounded_edittext"
             android:id="@+id/writeNFC"
-            android:layout_toEndOf="@+id/writeNFCbtn"
+            android:layout_toEndOf="@+id/overwriteNFCbtn"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="30dp" />
 

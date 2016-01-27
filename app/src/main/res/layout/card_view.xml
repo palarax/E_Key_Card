@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/tagID_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
 
         <TextView
             android:id="@+id/techList_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
 
         <TextView
             android:id="@+id/tagType_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,12 +93,12 @@
             android:layout_height="wrap_content"
             android:text="@string/tagMessage"
             android:textColor="@android:color/white"
-            android:layout_below="@+id/tagType"
-            android:layout_alignEnd="@+id/tagType" />
+            android:layout_below="@+id/tagSize"
+            android:layout_alignEnd="@+id/tagSize" />
 
         <TextView
             android:id="@+id/tagMessage_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,12 +117,12 @@
             android:layout_height="wrap_content"
             android:text="@string/tagSize"
             android:textColor="@android:color/white"
-            android:layout_below="@+id/tagMessage"
-            android:layout_alignEnd="@+id/tagMessage" />
+            android:layout_below="@+id/tagType"
+            android:layout_alignEnd="@+id/tagType" />
 
         <TextView
             android:id="@+id/tagSize_text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

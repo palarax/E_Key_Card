@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -39,7 +41,8 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     private RecyclerAdapter_Scroller cardInfo ;
     private int index;
     private boolean writeToNFC = false; //boolean to check if a message is ready to be sent
-    private Button nfcWriteBtn; //write button
+    private Button nfcOverwriteBtn; //write button
+    private Button nfcaddrecordbtn; //write button
 
     //Card and Recycler layout
     private RecyclerView mRecyclerView;
@@ -78,7 +81,6 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         mainView = inflater.inflate(viewID, container, false);
         //choose view
         choosingView(inflater, container);
-
         //creates a new cardReader object
         cardReader = new nfcCardReader(this);
 
@@ -107,23 +109,25 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         {
             mainView = inflater.inflate(R.layout.nfc_write_fragment, container, false);
             writeNFCmessage = (EditText) mainView.findViewById(R.id.writeNFC);
-            nfcWriteBtn = (Button) mainView.findViewById(R.id.writeNFCbtn);
-            nfcWriteBtn.setOnClickListener(new View.OnClickListener() {
+            nfcOverwriteBtn = (Button) mainView.findViewById(R.id.overwriteNFCbtn);
+            nfcaddrecordbtn = (Button) mainView.findViewById(R.id.writeRecordBtn);
+
+            nfcOverwriteBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // Perform action on click
                     writeToNFC = true;
-                   alertBox(true);
-
+                    Toast.makeText(getActivity(), "writing message",
+                            Toast.LENGTH_LONG).show();
+                   //alertBox(true);
                 }
             });
 
         } else {
             Log.e(TAG,"ViewID null");
         }
-
     }
 
-    //FormulaDialog mFormulaDialog = new FormulaDialog(getContext());
+
 
 
     private void alertBox(boolean cancel)
@@ -133,7 +137,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
                     .setTitle("Waiting for tag")
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            writeToNFC = false;
+                            //writeToNFC = false;
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -222,20 +226,22 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         String tagSize = "";
         //Look through tech
         for (String singleTech : techList) {
-            if (singleTech.equals(Ndef.class.getName())) {
-                Log.e(TAG, "Tech have spoken");
+            if (singleTech.equals(Ndef.class.getName()) || singleTech.equals(NdefFormatable.class.getName())) {
                 NdefTag ndef = new NdefTag();
                 tagSize = ndef.getSize(tag);
                 try {
                     if (writeToNFC) {
                         //write
-
-                        Log.e(TAG, "Write enabled");
-                        ndef.writeMessage(writeNFCmessage.getText().toString(), tag);
+                        if(ndef.writeMessage(writeNFCmessage.getText().toString(), tag))
+                        {
+                            Toast .makeText(getActivity(), "writing message",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        writeToNFC=false;
                     }
                 }catch (Exception e){ Log.i(TAG,"Exception: "+e);}
-                alertBox(false);
-                writeToNFC=false;
+                //alertBox(false);
+
                 Log.e(TAG,"SIZE: "+tagSize);
                 message =  ndef.read(tag);
                 break;

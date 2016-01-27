@@ -47,7 +47,8 @@
     <string name="tagSize_text">undefined</string>
 
     <!-- Tag information  -->
-    <string name="tag_write">write here </string>
+    <string name="tag_overwrite">Overwrite tag </string>
+    <string name="tag_record_write">Add record </string>
     <string name="write_cancel">cancel</string>
 
 

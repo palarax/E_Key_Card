@@ -66,6 +66,7 @@ public class NdefTag {
 
 
     public boolean writeMessage(String text, Tag tag) throws IOException, FormatException {
+        Log.e(TAG,"write message");
         String language = "en";
         //NdefRecord records = NdefRecord.createTextRecord(language,text);
         NdefRecord[] records = {createRecord(text)};
@@ -76,14 +77,12 @@ public class NdefTag {
             Ndef ndef = Ndef.get(tag);
             if (ndef != null) {
                 ndef.connect();
-                Log.e(TAG, "Ndef connected");
                 if (!ndef.isWritable()) {
                     return false;
                 }
                 if (ndef.getMaxSize() < size) {
                     return false;
                 }
-                Log.e(TAG, "writing msg" + message);
                 ndef.writeNdefMessage(message);
                 return true;
             } else {
