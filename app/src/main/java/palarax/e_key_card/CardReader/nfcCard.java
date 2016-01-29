@@ -2,9 +2,6 @@ package palarax.e_key_card.CardReader;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
@@ -12,7 +9,6 @@ import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import palarax.e_key_card.NFC_Tag_Tech.NdefTag;
@@ -36,7 +31,7 @@ import palarax.e_key_card.adapters.newDialog;
 /**
  * @author Ilya Thai
  */
-public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
+public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,View.OnClickListener {
 
     public static final String TAG = "NFC_Card";
     public static final int MSG_RECORD = 1;
@@ -53,11 +48,11 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
     private int msgOption;
     private boolean overwriteMsg = false; //boolean to check if a "overwrite" message is ready to be sent
 
-    private Button nfcOverwriteBtn; //overwrite button
-    private Button nfcaddrecordbtn; //recrod write button
+    private Button nfcOverwriteBtn, nfcclearBtn, nfcaddrecordbtn; //nfc write function button
 
     private FragmentManager fm ;
     private newDialog editNameDialog;
+    private writeOptionDialog writeOptionDialog;
 
     //Card and Recycler layout
     private RecyclerView mRecyclerView;
@@ -127,28 +122,67 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
             writeNFCmessage = (EditText) mainView.findViewById(R.id.writeNFC);
             nfcOverwriteBtn = (Button) mainView.findViewById(R.id.overwriteNFCbtn);
             nfcaddrecordbtn = (Button) mainView.findViewById(R.id.writeRecordBtn);
+            nfcclearBtn = (Button) mainView.findViewById(R.id.clearBtn);
             fm = getFragmentManager();
 
-            nfcOverwriteBtn.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // Perform action on click
-                    msgOption = MSG_OVERWRITE;
-                    overwriteMsg = true;
-                    showEditDialog("Cancel", "Waiting for tag");
-                }
-            });
+            mainView.findViewById(R.id.vcard).setOnClickListener(this);
+            mainView.findViewById(R.id.plainMessage).setOnClickListener(this);
+            mainView.findViewById(R.id.teleNumber).setOnClickListener(this);
+            mainView.findViewById(R.id.link).setOnClickListener(this);
 
-            nfcaddrecordbtn.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // Perform action on click
-                    msgOption = MSG_RECORD;
-                    overwriteMsg = true;
-                    showEditDialog("Cancel", "Waiting for tag");
-                }
-            });
+            nfcOverwriteBtn.setOnClickListener(this);
+            nfcaddrecordbtn.setOnClickListener(this);
+            nfcclearBtn.setOnClickListener(this);
         } else {
             Log.e(TAG,"ViewID null");
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+            case R.id.link:
+                displayOption("URL:");
+                break;
+
+            case R.id.vcard:
+                displayOption("MAIL:");
+                break;
+
+            case R.id.plainMessage:
+                displayOption("TEXT:");
+                break;
+
+            case R.id.teleNumber:
+                displayOption("MOBILE:");
+                break;
+
+            case R.id.clearBtn:
+                    msgOption = MSG_CLEAR;
+                    overwriteMsg = true;
+                    showEditDialog("Cancel", "Waiting for tag");
+                    break;
+
+            case R.id.writeRecordBtn:
+                    msgOption = MSG_RECORD;
+                    overwriteMsg = true;
+                    showEditDialog("Cancel", "Waiting for tag");
+                    break;
+
+            case R.id.overwriteNFCbtn:
+                    msgOption = MSG_OVERWRITE;
+                    overwriteMsg = true;
+                    showEditDialog("Cancel", "Waiting for tag");
+                    break;
+        }
+    }
+
+    private void displayOption(String mid_text)
+    {
+        writeOptionDialog = new writeOptionDialog();
+        writeOptionDialog.setView(mid_text);
+        writeOptionDialog.show(fm, "option_dialog");
     }
 
     /**
@@ -251,7 +285,6 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
                         //write
                         message = writeNFCmessage.getText().toString();
                         msgRecords.add(message);
-                        Log.e(TAG,"msgRecords all: "+msgRecords);
                         ndef.writeMessage(msgRecords, tag, msgOption);
                         overwriteMsg=false;
                         showEditDialog("Complete","Tag write successful");

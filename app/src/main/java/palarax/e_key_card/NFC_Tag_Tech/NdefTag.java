@@ -137,26 +137,39 @@ public class NdefTag {
         }
     }
 
-    private void recordTypes(String data, String type)
+    private NdefRecord recordTypes(String data, String type) throws UnsupportedEncodingException
     {
+
         switch(type)
         {
-            case "hello": break;
+            case "URI":     return NdefRecord.createUri(data); // = NdefRecord.createUri("http://www.linkedin.com/in/ilyathai");
 
+
+            case "VCARD":   return createVcard(data);
+
+
+            case "APPLICATION": return NdefRecord.createApplicationRecord(data);
+
+
+            case "NUMBER":  return NdefRecord.createMime(type, data.getBytes()); //mime
+
+
+            default : return createRecord(data);
         }
-        NdefRecord records = null;
-        NdefRecord.createApplicationRecord(data); //application record
-        try {
-            records = createRecord(data); //text
-        }catch (UnsupportedEncodingException e) {}
-        NdefRecord.createUri(data); // NdefRecord testURI = NdefRecord.createUri("http://www.linkedin.com/in/ilyathai");
-        NdefRecord.createMime(type, data.getBytes()); //mime
 
     }
 
-    private NdefRecord createVcard(String text) throws UnsupportedEncodingException {
+
+    private NdefRecord createNumber(String text)  {
 
         //text/vcard
+        //new NdefRecord(NdefRecord.TNF_MIME_MEDIA, "text/vcard".getBytes(), new byte[0], payload);
+        return null;
+    }
+
+    private NdefRecord createVcard(String text) {
+
+        //  text/vcard
         //new NdefRecord(NdefRecord.TNF_MIME_MEDIA, "text/vcard".getBytes(), new byte[0], payload);
         return null;
     }
