@@ -3,12 +3,15 @@ package palarax.e_key_card.CardReader;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import palarax.e_key_card.NFC_Tag_Tech.NdefTag;
@@ -27,6 +31,7 @@ import palarax.e_key_card.NFC_Tag_Tech.nfcATag;
 import palarax.e_key_card.R;
 import palarax.e_key_card.adapters.CardObject;
 import palarax.e_key_card.adapters.RecyclerAdapter_Scroller;
+import palarax.e_key_card.adapters.newDialog;
 
 /**
  * @author Ilya Thai
@@ -34,15 +39,25 @@ import palarax.e_key_card.adapters.RecyclerAdapter_Scroller;
 public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
 
     public static final String TAG = "NFC_Card";
+    public static final int MSG_RECORD = 1;
+    public static final int MSG_OVERWRITE = 2;
+    public static final int MSG_CLEAR = 0;
+
     EditText writeNFCmessage; //message to be written
     private View mainView;          //Main view displayed
     private ViewGroup rootView;     // "container" of where mainView is located
     private int viewID;             //ID of the view used
     private RecyclerAdapter_Scroller cardInfo ;
     private int index;
-    private boolean writeToNFC = false; //boolean to check if a message is ready to be sent
-    private Button nfcOverwriteBtn; //write button
-    private Button nfcaddrecordbtn; //write button
+
+    private int msgOption;
+    private boolean overwriteMsg = false; //boolean to check if a "overwrite" message is ready to be sent
+
+    private Button nfcOverwriteBtn; //overwrite button
+    private Button nfcaddrecordbtn; //recrod write button
+
+    private FragmentManager fm ;
+    private newDialog editNameDialog;
 
     //Card and Recycler layout
     private RecyclerView mRecyclerView;
@@ -105,57 +120,54 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             mRecyclerView.setLayoutManager(llm);
             mRecyclerView.setAdapter(cardInfo);
+            overwriteMsg = false;
         }else if(viewID==R.layout.nfc_write_fragment)
         {
             mainView = inflater.inflate(R.layout.nfc_write_fragment, container, false);
             writeNFCmessage = (EditText) mainView.findViewById(R.id.writeNFC);
             nfcOverwriteBtn = (Button) mainView.findViewById(R.id.overwriteNFCbtn);
             nfcaddrecordbtn = (Button) mainView.findViewById(R.id.writeRecordBtn);
+            fm = getFragmentManager();
 
             nfcOverwriteBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // Perform action on click
-                    writeToNFC = true;
-                    Toast.makeText(getActivity(), "writing message",
-                            Toast.LENGTH_LONG).show();
-                   //alertBox(true);
+                    msgOption = MSG_OVERWRITE;
+                    overwriteMsg = true;
+                    showEditDialog("Cancel", "Waiting for tag");
                 }
             });
 
+            nfcaddrecordbtn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // Perform action on click
+                    msgOption = MSG_RECORD;
+                    overwriteMsg = true;
+                    showEditDialog("Cancel", "Waiting for tag");
+                }
+            });
         } else {
             Log.e(TAG,"ViewID null");
         }
     }
 
-
-
-
-    private void alertBox(boolean cancel)
-    {
-        if(cancel) {
-            new AlertDialog.Builder(getContext())
-                    .setTitle("Waiting for tag")
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            //writeToNFC = false;
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        }else
-        {
-            new AlertDialog.Builder(getContext())
-                    .setTitle("Tag found")
-                    .setNegativeButton("complete", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            writeToNFC = false;
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+    /**
+     * Showed a dialog box when writing to tag
+     * @param message message to be displayed
+     * @param btnT text on the button
+     */
+    private void showEditDialog(String btnT, String message) {
+        try{
+            if(editNameDialog.getDialog().isShowing())
+            {
+                editNameDialog.getDialog().dismiss();
+            }
+        }catch (NullPointerException e){}
+        editNameDialog = new newDialog();
+        editNameDialog.getMsg(btnT, message);
+        editNameDialog.show(fm, "fragment_edit_name");
+        editNameDialog.setBtnResult(!overwriteMsg);
         }
-
-    }
 
 
     /**
@@ -222,37 +234,47 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback {
         String ID = bytesToHexString(tag.getId());
         nfcATag tag_nfcA = new nfcATag(tag);
         String type = tag_nfcA.getTagType();
-        String message = "";
+        ArrayList<String> msgRecords = new ArrayList<>();
         String tagSize = "";
+        String message = "";
         //Look through tech
         for (String singleTech : techList) {
             if (singleTech.equals(Ndef.class.getName()) || singleTech.equals(NdefFormatable.class.getName())) {
                 NdefTag ndef = new NdefTag();
                 tagSize = ndef.getSize(tag);
+                if(msgOption==MSG_RECORD) {
+                    msgRecords = ndef.read(tag);
+                }
+
                 try {
-                    if (writeToNFC) {
+                    if (overwriteMsg && !editNameDialog.getBtnResult()) {
                         //write
-                        if(ndef.writeMessage(writeNFCmessage.getText().toString(), tag))
-                        {
-                            Toast .makeText(getActivity(), "writing message",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        writeToNFC=false;
+                        message = writeNFCmessage.getText().toString();
+                        msgRecords.add(message);
+                        Log.e(TAG,"msgRecords all: "+msgRecords);
+                        ndef.writeMessage(msgRecords, tag, msgOption);
+                        overwriteMsg=false;
+                        showEditDialog("Complete","Tag write successful");
                     }
                 }catch (Exception e){ Log.i(TAG,"Exception: "+e);}
-                //alertBox(false);
-
                 Log.e(TAG,"SIZE: "+tagSize);
-                message =  ndef.read(tag);
-                break;
+                message = ndef.read(tag).toString();
+               // break;
             }
         }
         //update information
-
         updateCard(message, ID, tech, type, tagSize);
-
     }
 
+
+    /**
+     * Updates tag information in card view
+     * @param message   message from tag
+     * @param identification    tag ID
+     * @param technology    tech in the tag
+     * @param tagType   type of tag
+     * @param tagSize   tag size
+     */
     public void updateCard(String message,String identification, String technology, String tagType, String tagSize)
     {
         final String tech = technology;

@@ -1,5 +1,6 @@
 package palarax.e_key_card.NFC_Tag_Tech;
 
+import android.net.Uri;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -8,8 +9,11 @@ import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -17,31 +21,38 @@ import java.util.Arrays;
  */
 public class NdefTag {
 
-    public static final String TAG = "NdefTag";
+    private static final String TAG = "NdefTag";
+    private static final int MSG_RECORD = 1;
+    private static final int MSG_OVERWRITE = 2;
+    private static final int MSG_CLEAR = 0;
 
-    public String read(Tag tag) {
+
+
+    public ArrayList read(Tag tag) {
+        ArrayList<String> msgRecords = new ArrayList<>();
         Ndef ndef = Ndef.get(tag);
         if (ndef == null) {
 
             // NDEF is not supported by this Tag.
-            Log.e(TAG, "Not supported");
+            Log.e(TAG, "NDEF is not supported by this Tag");
             return null;
         }
-        String message ="";
+
         NdefMessage ndefMessage = ndef.getCachedNdefMessage();
         Log.e(TAG, "Cache: " + ndefMessage);
         NdefRecord[] records = ndefMessage.getRecords();
         for (NdefRecord ndefRecord : records) {
-            Log.e(TAG, "Cache: " + ndefRecord.toString());
+
             //if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
                 try {
-                    message+= readText(ndefRecord)+", ";
+
+                    //message+= readText(ndefRecord)+", ";
+                    msgRecords.add(readText(ndefRecord));
                 } catch (UnsupportedEncodingException e) {
                     Log.e(TAG, "Unsupported Encoding", e);
                 }
-            //}
         }
-        return message;
+        return msgRecords;
     }
 
     /**
@@ -65,14 +76,35 @@ public class NdefTag {
     }
 
 
-    public boolean writeMessage(String text, Tag tag) throws IOException, FormatException {
+    public boolean writeMessage(ArrayList<String> readRecords, Tag tag, int msgOption) throws IOException, FormatException {
         Log.e(TAG,"write message");
-        String language = "en";
-        //NdefRecord records = NdefRecord.createTextRecord(language,text);
-        NdefRecord[] records = {createRecord(text)};
+        //String language = "en";
 
-        NdefMessage message = new NdefMessage(records);
-        int size = message.toByteArray().length;
+        NdefRecord[] messageRecords = new NdefRecord[readRecords.size()];
+        NdefMessage message = null;
+        int size=0;
+
+        switch (msgOption) {
+            case MSG_CLEAR:         message = new NdefMessage(new NdefRecord(NdefRecord.TNF_EMPTY, null, null, null));
+                                    break;
+
+            case MSG_RECORD:
+                                    Log.e(TAG,"Records size: "+readRecords.size());
+
+                                    for(int i=0 ; i<readRecords.size();i++)
+                                    {
+                                        messageRecords[i] = createRecord(readRecords.get(i));
+                                    }
+                                    message = new NdefMessage(messageRecords);
+                                    size = message.toByteArray().length;
+
+                                    break;
+
+            case MSG_OVERWRITE:     NdefRecord[] records = {createRecord(readRecords.get(0))};
+                                    message = new NdefMessage(records);
+                                    size = message.toByteArray().length;
+                                    break;
+        }
         try {
             Ndef ndef = Ndef.get(tag);
             if (ndef != null) {
@@ -103,6 +135,30 @@ public class NdefTag {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private void recordTypes(String data, String type)
+    {
+        switch(type)
+        {
+            case "hello": break;
+
+        }
+        NdefRecord records = null;
+        NdefRecord.createApplicationRecord(data); //application record
+        try {
+            records = createRecord(data); //text
+        }catch (UnsupportedEncodingException e) {}
+        NdefRecord.createUri(data); // NdefRecord testURI = NdefRecord.createUri("http://www.linkedin.com/in/ilyathai");
+        NdefRecord.createMime(type, data.getBytes()); //mime
+
+    }
+
+    private NdefRecord createVcard(String text) throws UnsupportedEncodingException {
+
+        //text/vcard
+        //new NdefRecord(NdefRecord.TNF_MIME_MEDIA, "text/vcard".getBytes(), new byte[0], payload);
+        return null;
     }
 
     private NdefRecord createRecord(String text) throws UnsupportedEncodingException {
