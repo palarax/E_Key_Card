@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -31,19 +30,19 @@ import palarax.e_key_card.adapters.newDialog;
 /**
  * @author Ilya Thai
  */
-public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,View.OnClickListener {
+public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,View.OnClickListener, palarax.e_key_card.CardReader.writeOptionDialog.dialogDoneListener {
 
     public static final String TAG = "NFC_Card";
     public static final int MSG_RECORD = 1;
     public static final int MSG_OVERWRITE = 2;
     public static final int MSG_CLEAR = 0;
 
-    EditText writeNFCmessage; //message to be written
     private View mainView;          //Main view displayed
     private ViewGroup rootView;     // "container" of where mainView is located
-    private int viewID;             //ID of the view used
+    private int viewID, index;
     private RecyclerAdapter_Scroller cardInfo ;
-    private int index;
+
+    private String msgType, msgRecord;
 
     private int msgOption;
     private boolean overwriteMsg = false; //boolean to check if a "overwrite" message is ready to be sent
@@ -119,12 +118,10 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
         }else if(viewID==R.layout.nfc_write_fragment)
         {
             mainView = inflater.inflate(R.layout.nfc_write_fragment, container, false);
-            writeNFCmessage = (EditText) mainView.findViewById(R.id.writeNFC);
             nfcOverwriteBtn = (Button) mainView.findViewById(R.id.overwriteNFCbtn);
             nfcaddrecordbtn = (Button) mainView.findViewById(R.id.writeRecordBtn);
             nfcclearBtn = (Button) mainView.findViewById(R.id.clearBtn);
             fm = getFragmentManager();
-
             mainView.findViewById(R.id.vcard).setOnClickListener(this);
             mainView.findViewById(R.id.plainMessage).setOnClickListener(this);
             mainView.findViewById(R.id.teleNumber).setOnClickListener(this);
@@ -144,18 +141,22 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
         switch (v.getId()) {
             case R.id.link:
                 displayOption("URL:");
+                msgType="URI";
                 break;
 
             case R.id.vcard:
                 displayOption("MAIL:");
+                msgType="VCARD";
                 break;
 
             case R.id.plainMessage:
                 displayOption("TEXT:");
+                msgType="TEXT";
                 break;
 
             case R.id.teleNumber:
                 displayOption("MOBILE:");
+                msgType="MOBILE";
                 break;
 
             case R.id.clearBtn:
@@ -182,8 +183,29 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
     {
         writeOptionDialog = new writeOptionDialog();
         writeOptionDialog.setView(mid_text);
+        writeOptionDialog.setListener(this);
         writeOptionDialog.show(fm, "option_dialog");
+
     }
+
+    @Override
+    public void onDone(String inputText[]) {
+        if(!inputText[0].equals(""))
+        {
+            msgRecord = inputText[0];
+        }
+        if(msgType.equals("VCARD"))
+        {
+            msgRecord = "BEGIN:VCARD" +"\n"+ "VERSION:2.1" +"\n" + "N:" + inputText[2] + "\n" + "TEL:"+inputText[0] +"\n"+ "EMAIL:"+inputText[0] +"\n"+"END:VCARD";
+        }
+        if(msgType.equals("MOBILE"))
+        {
+            msgRecord =inputText[0];
+        }
+
+    }
+
+
 
     /**
      * Showed a dialog box when writing to tag
@@ -283,9 +305,9 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
                 try {
                     if (overwriteMsg && !editNameDialog.getBtnResult()) {
                         //write
-                        message = writeNFCmessage.getText().toString();
-                        msgRecords.add(message);
-                        ndef.writeMessage(msgRecords, tag, msgOption);
+                        //message = writeNFCmessage.getText().toString();
+                        msgRecords.add(msgRecord);
+                        ndef.writeMessage(msgRecords, tag, msgOption,msgType);
                         overwriteMsg=false;
                         showEditDialog("Complete","Tag write successful");
                     }

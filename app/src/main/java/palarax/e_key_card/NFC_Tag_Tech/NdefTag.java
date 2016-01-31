@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -33,7 +35,6 @@ public class NdefTag {
         Ndef ndef = Ndef.get(tag);
         if (ndef == null) {
 
-            // NDEF is not supported by this Tag.
             Log.e(TAG, "NDEF is not supported by this Tag");
             return null;
         }
@@ -42,11 +43,11 @@ public class NdefTag {
         Log.e(TAG, "Cache: " + ndefMessage);
         NdefRecord[] records = ndefMessage.getRecords();
         for (NdefRecord ndefRecord : records) {
-
-            //if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
+                Log.e(TAG,"TYPE: "+new String(ndefRecord.getType(), StandardCharsets.UTF_8));
+                Log.e(TAG,"toMimeType: "+ndefRecord.toMimeType());
+                Log.e(TAG,"TNF: "+Short.toString(ndefRecord.getTnf()));
+                Log.e(TAG,"toURI: "+ndefRecord.toUri());
                 try {
-
-                    //message+= readText(ndefRecord)+", ";
                     msgRecords.add(readText(ndefRecord));
                 } catch (UnsupportedEncodingException e) {
                     Log.e(TAG, "Unsupported Encoding", e);
@@ -66,17 +67,20 @@ public class NdefTag {
         String UTF8 = "UTF-8";
         String UTF16 = "UTF-16";
         // Get the Text Encoding
-        String textEncoding = ((payload[0] & 128) == 0) ? UTF8 : UTF16;
+        try {
+            String textEncoding = ((payload[0] & 128) == 0) ? UTF8 : UTF16;
 
-        // Get the Language Code
-        int languageCodeLength = payload[0] & 0063;
-        // Get the Text
-        Log.i(TAG, textEncoding);
-        return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+            // Get the Language Code
+            int languageCodeLength = payload[0] & 0063;
+            // Get the Text
+            Log.i(TAG, textEncoding);
+            return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+        }catch (ArrayIndexOutOfBoundsException e){}
+        return "";
     }
 
 
-    public boolean writeMessage(ArrayList<String> readRecords, Tag tag, int msgOption) throws IOException, FormatException {
+    public boolean writeMessage(ArrayList<String> readRecords, Tag tag, int msgOption,String msgType) throws IOException, FormatException {
         Log.e(TAG,"write message");
         //String language = "en";
 
@@ -93,14 +97,14 @@ public class NdefTag {
 
                                     for(int i=0 ; i<readRecords.size();i++)
                                     {
-                                        messageRecords[i] = createRecord(readRecords.get(i));
+                                        messageRecords[i] = messageRecords[i] = recordTypes(readRecords.get(i),msgType);
                                     }
                                     message = new NdefMessage(messageRecords);
                                     size = message.toByteArray().length;
 
                                     break;
 
-            case MSG_OVERWRITE:     NdefRecord[] records = {createRecord(readRecords.get(0))};
+            case MSG_OVERWRITE:     NdefRecord[] records = {recordTypes(readRecords.get(0),msgType)};
                                     message = new NdefMessage(records);
                                     size = message.toByteArray().length;
                                     break;
@@ -142,17 +146,16 @@ public class NdefTag {
 
         switch(type)
         {
-            case "URI":     return NdefRecord.createUri(data); // = NdefRecord.createUri("http://www.linkedin.com/in/ilyathai");
+            case "URI":     return makeURI(data); // = NdefRecord.createUri("http://www.linkedin.com/in/ilyathai");
 
 
-            case "VCARD":   return createVcard(data);
+            case "VCARD":  return NdefRecord.createMime("text/vcard", data.getBytes()); //mime
 
 
             case "APPLICATION": return NdefRecord.createApplicationRecord(data);
 
 
-            case "NUMBER":  return NdefRecord.createMime(type, data.getBytes()); //mime
-
+            case "MOBILE":      return NdefRecord.createUri("tel:"+data);  //special URI
 
             default : return createRecord(data);
         }
@@ -160,18 +163,13 @@ public class NdefTag {
     }
 
 
-    private NdefRecord createNumber(String text)  {
-
-        //text/vcard
-        //new NdefRecord(NdefRecord.TNF_MIME_MEDIA, "text/vcard".getBytes(), new byte[0], payload);
-        return null;
-    }
-
-    private NdefRecord createVcard(String text) {
-
-        //  text/vcard
-        //new NdefRecord(NdefRecord.TNF_MIME_MEDIA, "text/vcard".getBytes(), new byte[0], payload);
-        return null;
+    private static NdefRecord makeURI(String uri)
+    {
+        final byte[] uriBytes = uri.getBytes(Charset.forName("UTF-8"));
+        final byte[] recordBytes = new byte[uriBytes.length + 1];
+        recordBytes[0] = (byte) 0x01; // http://www.
+        System.arraycopy(uriBytes, 0, recordBytes, 1, uriBytes.length);
+        return new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_URI, new byte[0], recordBytes);
     }
 
     private NdefRecord createRecord(String text) throws UnsupportedEncodingException {
