@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/curved_dialog_shape">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/upperColorBox"
+        android:gravity="center"
+        android:background="@drawable/curved_dialog_subshape"
+        android:scaleType="fitCenter" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_text_top"
+        android:text="top:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:textColor="#ff000000"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="60dp"
+        android:gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="170dp"
+        android:layout_height="27dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:background="@color/white"
+        android:id="@+id/dialog_write_top"
+        android:layout_marginStart="20dp"
+        android:layout_alignBaseline="@+id/dialog_text_top"
+        android:layout_toEndOf="@+id/dialog_text_top"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_text_mid"
+        android:text="mid:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:textColor="#ff000000"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/dialog_text_top"
+        android:layout_alignEnd="@+id/dialog_text_top"
+        android:gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="170dp"
+        android:layout_height="27dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:background="@color/white"
+        android:id="@+id/dialog_write_mid"
+        android:layout_marginStart="20dp"
+        android:layout_alignBaseline="@+id/dialog_text_mid"
+        android:layout_toEndOf="@+id/dialog_text_mid"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_text_bot"
+        android:text="bot:"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:textColor="#ff000000"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/dialog_text_mid"
+        android:layout_alignEnd="@+id/dialog_text_mid"
+        android:gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="170dp"
+        android:layout_height="27dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:background="@color/white"
+        android:id="@+id/dialog_write_bot"
+        android:layout_marginStart="20dp"
+        android:layout_alignBaseline="@+id/dialog_text_bot"
+        android:layout_toEndOf="@+id/dialog_text_bot"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="FINISH"
+        android:id="@+id/finishOption"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_below="@+id/upperColorBox"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>

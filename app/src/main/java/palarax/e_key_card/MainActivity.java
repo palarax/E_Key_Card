@@ -1,108 +1,143 @@
 package palarax.e_key_card;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.nfc.NfcAdapter;
+import android.view.ViewGroup;
 
-import palarax.e_key_card.CardReader.nfcCardReader;
 
-public class MainActivity extends AppCompatActivity implements nfcCardReader.AccountCallback  {
+import palarax.e_key_card.CardReader.nfcCard;
+import palarax.e_key_card.QR_code.QrScannerActivity;
+
+/**
+ * @author Ilya Thai
+ */
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private static final String TAG = MainActivity.class.getSimpleName(); //used for debugging
-    private TextView mTextView; //text box
 
-    // Recommend NfcAdapter flags for reading from other Android devices. Indicates that this
-    // activity is interested in NFC-A devices (including other Android devices), and that the
-    // system should not check for the presence of NDEF-formatted data (e.g. Android Beam).
-    public static int READER_FLAGS =
-            NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK;
-    public nfcCardReader cardReader;
+    private nfcCard NFC_card_fragment = new nfcCard();
+    private MainFragment home_fragment = new MainFragment();
+    private QrScannerActivity QR_scanner = new QrScannerActivity();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextView = (TextView) findViewById(R.id.accountID);
-
-        //creates a new cardReader object
-        cardReader = new nfcCardReader(this);
-        // Disable Android Beam and register our card reader callback
-        enableReaderMode();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //only displayed 1 at a time
-                Log.e(TAG, "Debugger working");
-                // Ensures Bluetooth is available on the device and it is enabled. If not,
-                // displays a dialog requesting user permission to enable Bluetooth.
 
-                Snackbar.make(view, "Looking for tags ", Snackbar.LENGTH_LONG)
-                        .setAction("Cancel", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(MainActivity.this, "cancelled", Toast.LENGTH_SHORT).show();
-                                disableReaderMode();
-                            }
-                        }).show();
-            }
-        });
+        //create a drawer layout menu
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        MainFragment fragment = new MainFragment();
+        transaction.replace(R.id.main_frag, fragment);
+        transaction.commit();
     }
 
-    private void enableReaderMode() {
-        Log.e(TAG, "Enabling reader mode");
-        //Activity activity = getActivity(); //user defined fragment
-        NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
-        if (nfc != null) {
-            nfc.enableReaderMode(this, cardReader, READER_FLAGS, null);
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        FragmentTransaction transaction;
+
+        switch (id) {
+            case R.id.nav_home:
+                    // TODO: create a main screen
+                    setTitle("HOME");
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_frag, home_fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    break;
+
+            case  R.id.nav_scan:
+                    //scan ID and tech
+                    //TODO: add a clear button
+                    setTitle("SCAN");
+                    //Set the correct layout since WRITE/SCAN are both using nfcCard
+                    try {
+                        NFC_card_fragment.setViewLayout(R.layout.nfc_details_fragment);
+
+                    }catch (Exception e){
+                        Log.i(TAG,"Scan/Write error on the first go");
+                        NFC_card_fragment.setviewID(R.layout.nfc_details_fragment);
+                    }
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_frag, NFC_card_fragment);
+                    transaction.commit();
+                    break;
+
+            case R.id.nav_write:
+                    // TODO: finish write to NFC
+                    setTitle("WRITE");
+                    //Set the correct layout since WRITE/SCAN are both using nfcCard
+                    try {
+                        NFC_card_fragment.setViewLayout(R.layout.nfc_write_fragment);
+                    }catch (Exception e){
+                        Log.i(TAG,"Scan/Write error on the first go");
+                        NFC_card_fragment.setviewID(R.layout.nfc_write_fragment);
+                    }
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_frag, NFC_card_fragment);
+                    transaction.commit();
+                    break;
+
+            case R.id.nav_card_emulate:
+                    // TODO: emulate NFC card
+                    setTitle("CARD EMULATION");
+                    break;
+
+            case R.id.nav_manage_tags:
+                    // TODO: manage what the NFC card does
+                    setTitle("MANAGE");
+                    break;
+
+            case  R.id.nav_qr:
+
+                    setTitle("BARCODE FUNCTION");
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_frag, QR_scanner);
+                    transaction.commit();
+                    break;
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
-    private void disableReaderMode() {
-        Log.i(TAG, "Disabling reader mode");
-        //Activity activity = getActivity();
-        NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
-        if (nfc != null) {
-            nfc.disableReaderMode(this);
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
         }
-    }
-
-    //receives data after nfc card has been found
-    @Override
-    public void onAccountReceived(final String account) {
-        // This callback is run on a background thread, but updates to UI elements must be performed
-        // on the UI thread.
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mTextView.setText(account);
-            }
-        });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        disableReaderMode();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        enableReaderMode();
+        else {
+            super.onBackPressed();
+        }
     }
 
 
@@ -121,10 +156,26 @@ public class MainActivity extends AppCompatActivity implements nfcCardReader.Acc
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_settings) {            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Fragment that appears in the main screen
+     */
+    public static class MainFragment extends Fragment {
+
+        public MainFragment() {
+            // Empty constructor required for fragment subclasses
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            getActivity().setTitle("HOME");
+            return inflater.inflate(R.layout.content_main, container, false);
+        }
     }
 }

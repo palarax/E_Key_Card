@@ -1,0 +1,138 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:id="@+id/card"
+    card_view:cardCornerRadius="4dp"
+    android:layout_margin="5dp">
+
+    <RelativeLayout
+        android:background="@drawable/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tagID"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ID"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="60dp"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:id="@+id/tagID_text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/ID_text"
+            android:layout_alignBaseline="@+id/tagID"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tagID" />
+
+        <TextView
+            android:id="@+id/techList"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tagID"
+            android:layout_alignEnd="@+id/tagID"
+            android:textColor="@android:color/white"
+            android:text="@string/tech"/>
+
+        <TextView
+            android:id="@+id/techList_text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/tech_text"
+            android:layout_alignBaseline="@+id/techList"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/techList" />
+
+        <TextView
+            android:id="@+id/tagType"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tagType"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/techList"
+            android:layout_alignEnd="@+id/techList" />
+
+        <TextView
+            android:id="@+id/tagType_text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/tagType_text"
+            android:layout_alignBaseline="@+id/tagType"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tagType" />
+
+        <TextView
+            android:id="@+id/tagMessage"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tagMessage"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/tagSize"
+            android:layout_alignEnd="@+id/tagSize" />
+
+        <TextView
+            android:id="@+id/tagMessage_text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/tagMessage_text"
+            android:layout_alignBaseline="@+id/tagMessage"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tagMessage" />
+
+        <TextView
+            android:id="@+id/tagSize"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tagSize"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/tagType"
+            android:layout_alignEnd="@+id/tagType" />
+
+        <TextView
+            android:id="@+id/tagSize_text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/tagSize_text"
+            android:layout_marginStart="10dp"
+            android:layout_alignBaseline="@+id/tagSize"
+            android:layout_toEndOf="@+id/tagSize" />
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
