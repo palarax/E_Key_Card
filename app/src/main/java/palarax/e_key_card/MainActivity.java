@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.nav_home:
                     // TODO: create a main screen
+                    //TODO: add a login and write to database functions
                     setTitle("HOME");
                     transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_frag, home_fragment);
@@ -90,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     break;
 
             case R.id.nav_write:
-                    // TODO: finish write to NFC
                     setTitle("WRITE");
                     //Set the correct layout since WRITE/SCAN are both using nfcCard
                     try {
