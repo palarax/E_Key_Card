@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -77,7 +78,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
 
     private ArrayList<CardObject> getDataSet() {
         //Replace this code with the scanned data
-        ArrayList results = new ArrayList<CardObject>();
+        ArrayList results = new ArrayList<>();
         CardObject obj = new CardObject("-1", "-1","-1","-1","-1");
         results.add(0, obj);
         return results;
@@ -206,7 +207,6 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
     }
 
 
-
     /**
      * Showed a dialog box when writing to tag
      * @param message message to be displayed
@@ -218,7 +218,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
             {
                 editNameDialog.getDialog().dismiss();
             }
-        }catch (NullPointerException e){}
+        }catch (NullPointerException e){Log.i(TAG,"Error: "+e);}
         editNameDialog = new newDialog();
         editNameDialog.getMsg(btnT, message);
         editNameDialog.show(fm, "fragment_edit_name");
@@ -290,34 +290,45 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
         String ID = bytesToHexString(tag.getId());
         nfcATag tag_nfcA = new nfcATag(tag);
         String type = tag_nfcA.getTagType();
-        ArrayList<String> msgRecords = new ArrayList<>();
+        ArrayList msgRecords = new ArrayList<>();
         String tagSize = "";
         String message = "";
         //Look through tech
         for (String singleTech : techList) {
+            //selected only Ndef and NdefFormatable techs
             if (singleTech.equals(Ndef.class.getName()) || singleTech.equals(NdefFormatable.class.getName())) {
                 NdefTag ndef = new NdefTag();
                 tagSize = ndef.getSize(tag);
                 if(msgOption==MSG_RECORD) {
                     msgRecords = ndef.read(tag);
+                    //if it's NdefFormatable, then don't try to read the message (there is none)
+                    if(msgRecords.isEmpty() && msgOption != MSG_OVERWRITE)
+                    {
+                        Toast.makeText(getContext(), "Tag has to be formatted by overwriting", Toast.LENGTH_LONG).show();
+                        overwriteMsg=false;
+                    }
                 }
 
+                //Ndef - read,write,add messages
+                //NdefFormatable - overwrite/format message
                 try {
                     if (overwriteMsg && !editNameDialog.getBtnResult()) {
                         //write
-                        //message = writeNFCmessage.getText().toString();
-                        msgRecords.add(msgRecord);
+                        msgRecords.add(msgRecord); //add users message to records
                         ndef.writeMessage(msgRecords, tag, msgOption,msgType);
                         overwriteMsg=false;
                         showEditDialog("Complete","Tag write successful");
                     }
                 }catch (Exception e){ Log.i(TAG,"Exception: "+e);}
                 Log.e(TAG,"SIZE: "+tagSize);
-                message = ndef.read(tag).toString();
-               // break;
+                //read message, if it's null then catch the error and make it ""
+                try {
+                    message = ndef.read(tag).toString();
+                }catch (NullPointerException e) {message = "";}
+                break;
             }
         }
-        //update information
+        //update information in Scan cards
         updateCard(message, ID, tech, type, tagSize);
     }
 

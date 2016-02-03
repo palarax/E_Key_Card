@@ -15,6 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import io.cloudboost.*;
 
 
 import palarax.e_key_card.CardReader.nfcCard;
@@ -38,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         //create a drawer layout menu
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -49,6 +52,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Set header name
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            View headView = navigationView.getHeaderView(0);
+            ((TextView) headView.findViewById(R.id.header_name)).setText(extras.getString("name"));
+
+        }
+
+        //Initial fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         MainFragment fragment = new MainFragment();
         transaction.replace(R.id.main_frag, fragment);
@@ -64,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_home:
-                    // TODO: create a main screen
-                    //TODO: add a login and write to database functions
                     setTitle("HOME");
                     transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_frag, home_fragment);
@@ -162,20 +172,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Fragment that appears in the main screen
-     */
     public static class MainFragment extends Fragment {
 
         public MainFragment() {
             // Empty constructor required for fragment subclasses
+            CloudApp.init("ecard", "wsI7LudUN2cmLulZJhbKRK5n+jBTQI24AmJmm1KxRqI=");
+
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             getActivity().setTitle("HOME");
-            return inflater.inflate(R.layout.content_main, container, false);
+            return inflater.inflate(R.layout.home_fragment, container, false);
         }
     }
 }
