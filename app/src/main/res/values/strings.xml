@@ -57,8 +57,6 @@
     <string name="link">Link </string>
     <string name="teleNumber">Telephone number</string>
 
-
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -70,7 +68,14 @@
     <string name="nav_card_emulate"> CARDS </string>
     <string name="nav_qr">BARCODES</string>
 
-
     <!--  Card emulation data -->
     <string name="card_Sample">Card Sample </string>
+
+    <!-- Register intent  -->
+    <string name="reg_username">USERNAME </string>
+    <string name="reg_username_hint">Enter your username </string>
+    <string name="reg_email">EMAIL </string>
+    <string name="reg_email_hint">Enter your email </string>
+    <string name="reg_password">PASSWORD </string>
+    <string name="reg_password_hint">Enter your password </string>
 </resources>

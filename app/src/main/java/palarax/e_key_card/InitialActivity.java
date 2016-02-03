@@ -18,7 +18,7 @@ import palarax.e_key_card.initialActivities.Register;
 
 public class InitialActivity extends AppCompatActivity implements View.OnClickListener {
 
-
+    private static final String TAG = InitialActivity.class.getSimpleName(); //used for debugging
     // https://www.cloudboost.io/quickstart
 
     @Override
@@ -66,10 +66,10 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void loginOnClick(){
-        /*
         CloudUser user = new CloudUser();
         user.setUserName("username");
         user.setPassword("password");
+        final Intent intent = new Intent(this, MainActivity.class);
         try {
             user.logIn(new CloudUserCallback() {
                 @Override
@@ -77,15 +77,15 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
                     if (e != null) {
                     }
                     if (object != null) {
-                        //
+                        //login
+                        intent.putExtra("name", "Ilya");
+                        startActivity(intent);
                     }
                 }
             });
         }catch (CloudException e){}
-        */
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("name", "Ilya");
-        startActivity(intent);
+
+
     }
 
     public void signup() {
