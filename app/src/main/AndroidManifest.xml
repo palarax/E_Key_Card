@@ -80,22 +80,3 @@
 
 </manifest>
 
-    <!--
-    <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-        <action android:name="android.nfc.action.TECH_DISCOVERED"/>
-    <intent-filter>
-        <action android:name="android.nfc.action.TECH_DISCOVERED"/>
-    </intent-filter>
-
-    <meta-data
-        android:name="android.nfc.action.TECH_DISCOVERED"
-        android:resource="@xml/nfc_tech_filter" />
-        -->
-
-    <!-- Used for specifc tags, data and information-->
-    <!--
-    <intent-filter>
-        <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-        <category android:name="android.intent.category.DEFAULT"/>
-    </intent-filter>
-    -->

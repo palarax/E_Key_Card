@@ -3,13 +3,10 @@ package palarax.e_key_card;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import io.cloudboost.CloudApp;
-import io.cloudboost.CloudException;
-import io.cloudboost.CloudUser;
-import io.cloudboost.CloudUserCallback;
 import palarax.e_key_card.initialActivities.Register;
 
 /**
@@ -19,15 +16,14 @@ import palarax.e_key_card.initialActivities.Register;
 public class InitialActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = InitialActivity.class.getSimpleName(); //used for debugging
-    // https://www.cloudboost.io/quickstart
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO: implement transition animations
         setContentView(R.layout.content_main);
-        //Initialise cloudboost api
-        CloudApp.init("ecard", "wsI7LudUN2cmLulZJhbKRK5n+jBTQI24AmJmm1KxRqI=");
+        //Initialise cloud api
 
         //Initialise buttons listeners
         findViewById(R.id.loginBTN).setOnClickListener(this);
@@ -66,46 +62,18 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void loginOnClick(){
-        CloudUser user = new CloudUser();
-        user.setUserName("username");
-        user.setPassword("password");
-        final Intent intent = new Intent(this, MainActivity.class);
-        try {
-            user.logIn(new CloudUserCallback() {
-                @Override
-                public void done(CloudUser object, CloudException e) throws CloudException {
-                    if (e != null) {
-                    }
-                    if (object != null) {
-                        //login
-                        intent.putExtra("name", "Ilya");
-                        startActivity(intent);
-                    }
-                }
-            });
-        }catch (CloudException e){}
-
+        /*mKinveyClient.ping(new KinveyPingCallback() {
+            public void onFailure(Throwable t) {
+                Log.e(TAG, "Kinvey Ping Failed", t);
+            }
+            public void onSuccess(Boolean b) {
+                Log.e(TAG, "Kinvey Ping Success");
+            }
+        });*/
 
     }
 
     public void signup() {
-        CloudUser obj = new CloudUser();
-        obj.setUserName("username");
-        obj.setPassword("password");
-        obj.setEmail("hello@abc.com");
-
-        //catch errors u twat
-        try {
-            obj.signUp(new CloudUserCallback() {
-                @Override
-                public void done(CloudUser object, CloudException e) throws CloudException {
-                    if (e != null) {
-                    }
-                    if (object != null) {
-                    }
-                }
-            });
-        }catch(CloudException e){}
     }
 
 
@@ -119,7 +87,6 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onStart() {
         super.onStart();
-        CloudApp.init("ecard", "wsI7LudUN2cmLulZJhbKRK5n+jBTQI24AmJmm1KxRqI=");
 
     }
 

@@ -28,6 +28,6 @@
     <color name="grey_400">#BDBDBD</color>
     <color name="grey_500">#9E9E9E</color>
     <color name="grey_600">#757575</color>
-    <color name="hint">#4B9E9E9E</color>
+    <color name="hint_opac">#50FFFFFF</color>
 
 </resources>

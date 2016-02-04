@@ -17,8 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import io.cloudboost.*;
-
 
 import palarax.e_key_card.CardReader.nfcCard;
 import palarax.e_key_card.QR_code.QrScannerActivity;
@@ -176,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         public MainFragment() {
             // Empty constructor required for fragment subclasses
-            CloudApp.init("ecard", "wsI7LudUN2cmLulZJhbKRK5n+jBTQI24AmJmm1KxRqI=");
 
         }
 

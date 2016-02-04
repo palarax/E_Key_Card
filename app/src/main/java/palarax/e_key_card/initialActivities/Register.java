@@ -10,9 +10,6 @@ import android.widget.Toast;
 
 //import org.androidannotations.annotations.Background;
 
-import io.cloudboost.CloudException;
-import io.cloudboost.CloudUser;
-import io.cloudboost.CloudUserCallback;
 import palarax.e_key_card.R;
 
 /**
@@ -60,25 +57,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
         }
         else
         {
-            CloudUser obj = new CloudUser();
-            obj.setUserName(username.trim());
-            obj.setPassword(password.trim());
-            obj.setEmail(email.trim());
-
-            //catch errors u twat
-            try {
-                obj.signUp(new CloudUserCallback() {
-                    @Override
-                    public void done(CloudUser object, CloudException e) throws CloudException {
-                        if (e != null) {
-                            Log.e(TAG,"cloud exception: "+e);
-                        }
-                        if (object != null) {
-                            Log.e(TAG,"Object: "+e);
-                        }
-                    }
-                });
-            }catch(CloudException e){}
             super.onBackPressed();
         }
     }
