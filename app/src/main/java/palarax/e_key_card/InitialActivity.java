@@ -3,11 +3,15 @@ package palarax.e_key_card;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 
 import palarax.e_key_card.initialActivities.DefaultCallback;
 import palarax.e_key_card.initialActivities.Register;
@@ -32,6 +36,7 @@ public class InitialActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.loginBTN).setOnClickListener(this);
         findViewById(R.id.registerBTN).setOnClickListener(this);
         findViewById(R.id.guestBTN).setOnClickListener(this);
+        findViewById(R.id.passwordreset).setOnClickListener(this);
 
     }
 
@@ -53,17 +58,41 @@ public class InitialActivity extends Activity implements View.OnClickListener {
                 nextActivity("Guest");
                 break;
 
+            case R.id.passwordreset:
+                passwordReset();
+                break;
         }
 
     }
 
+    private void passwordReset()
+    {
+        final EditText emailField = (EditText) findViewById(R.id.email);
+        if(TextUtils.isEmpty(emailField.getText().toString()))
+        {
+            Toast.makeText(getApplicationContext(), "Please enter your email", Toast.LENGTH_LONG).show();
+        }
+        else {
+            Backendless.UserService.restorePassword(emailField.getText().toString(), new AsyncCallback<Void>() {
+                public void handleResponse(Void response) {
+                    Toast.makeText(getApplicationContext(), "Email with temporary password has been sent", Toast.LENGTH_LONG).show();
+                }
 
-    public void registerOnClick() {
+                public void handleFault(BackendlessFault fault) {
+                    Toast.makeText(InitialActivity.this, fault.getCode(), Toast.LENGTH_SHORT).show();
+                    // password revovery failed, to get the error code call fault.getCode()
+                }
+            });
+        }
+    }
+
+
+    private void registerOnClick() {
         Intent intent = new Intent(this, Register.class);
         startActivity(intent);
     }
 
-    public void loginOnClick() {
+    private void loginOnClick() {
         final EditText emailField = (EditText) findViewById(R.id.email);
         final EditText passwordField = (EditText) findViewById(R.id.password);
         Backendless.UserService.login(emailField.getText().toString(), passwordField.getText().toString(), new DefaultCallback<BackendlessUser>(InitialActivity.this) {
@@ -77,7 +106,7 @@ public class InitialActivity extends Activity implements View.OnClickListener {
 
 
 
-    public void nextActivity(String name) {
+    private void nextActivity(String name) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("name",name);
         startActivity(intent);
