@@ -17,9 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.backendless.Backendless;
 
 import palarax.e_key_card.CardReader.nfcCard;
 import palarax.e_key_card.QR_code.QrScannerActivity;
+import palarax.e_key_card.initialActivities.DefaultCallback;
 
 /**
  * @author Ilya Thai
@@ -122,6 +124,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     setTitle("MANAGE");
                     break;
 
+            case R.id.nav_logout:
+                logout();
+                break;
+
             case  R.id.nav_qr:
 
                     setTitle("BARCODE FUNCTION");
@@ -148,6 +154,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void logout()
+    {
+        Backendless.initApp(this, BackEndlessDefaults.APPLICATION_ID, BackEndlessDefaults.SECRET_KEY, BackEndlessDefaults.VERSION); // where to get the argument values for this call
+        Backendless.UserService.logout(new DefaultCallback<Void>(MainActivity.this) {
+            @Override
+            public void handleResponse(Void response) {
+                super.handleResponse(response);
+                finish();
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

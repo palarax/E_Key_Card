@@ -1,22 +1,24 @@
 package palarax.e_key_card;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.EditText;
 
+import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
+
+import palarax.e_key_card.initialActivities.DefaultCallback;
 import palarax.e_key_card.initialActivities.Register;
 
 /**
  * @author Ilya Thai
  */
 
-public class InitialActivity extends AppCompatActivity implements View.OnClickListener {
+public class InitialActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = InitialActivity.class.getSimpleName(); //used for debugging
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +26,8 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         //TODO: implement transition animations
         setContentView(R.layout.content_main);
         //Initialise cloud api
-
+        Backendless.setUrl(BackEndlessDefaults.SERVER_URL);
+        Backendless.initApp(this, BackEndlessDefaults.APPLICATION_ID, BackEndlessDefaults.SECRET_KEY, BackEndlessDefaults.VERSION);
         //Initialise buttons listeners
         findViewById(R.id.loginBTN).setOnClickListener(this);
         findViewById(R.id.registerBTN).setOnClickListener(this);
@@ -43,12 +46,11 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.loginBTN:
-                Toast.makeText(getApplicationContext(), "Login test", Toast.LENGTH_LONG).show();
                 loginOnClick();
                 break;
 
             case R.id.guestBTN:
-                guestOnClick();
+                nextActivity("Guest");
                 break;
 
         }
@@ -61,25 +63,23 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
         startActivity(intent);
     }
 
-    public void loginOnClick(){
-        /*mKinveyClient.ping(new KinveyPingCallback() {
-            public void onFailure(Throwable t) {
-                Log.e(TAG, "Kinvey Ping Failed", t);
+    public void loginOnClick() {
+        final EditText emailField = (EditText) findViewById(R.id.email);
+        final EditText passwordField = (EditText) findViewById(R.id.password);
+        Backendless.UserService.login(emailField.getText().toString(), passwordField.getText().toString(), new DefaultCallback<BackendlessUser>(InitialActivity.this) {
+            public void handleResponse(BackendlessUser backendlessUser) {
+                super.handleResponse(backendlessUser);
+                BackendlessUser user = Backendless.UserService.CurrentUser();
+                nextActivity((String) user.getProperty("name"));
             }
-            public void onSuccess(Boolean b) {
-                Log.e(TAG, "Kinvey Ping Success");
-            }
-        });*/
-
-    }
-
-    public void signup() {
+        });
     }
 
 
-    public void guestOnClick() {
+
+    public void nextActivity(String name) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("name", "Guest");
+        intent.putExtra("name",name);
         startActivity(intent);
     }
 
@@ -87,7 +87,8 @@ public class InitialActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onStart() {
         super.onStart();
-
+        Backendless.setUrl(BackEndlessDefaults.SERVER_URL);
+        Backendless.initApp(this, BackEndlessDefaults.APPLICATION_ID, BackEndlessDefaults.SECRET_KEY, BackEndlessDefaults.VERSION);
     }
 
     @Override

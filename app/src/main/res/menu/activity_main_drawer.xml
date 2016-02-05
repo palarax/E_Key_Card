@@ -29,12 +29,12 @@
             android:title="@string/nav_manage_tags" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="User Settings">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="Logout" />
         </menu>
     </item>
 
