@@ -42,6 +42,8 @@ dependencies {
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
     compile files('libs/backendless.jar')
+    //custom progress dialog
+    compile 'com.github.d-max:spots-dialog:0.4@aar'
 }
 
 apt {

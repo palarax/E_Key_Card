@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -52,17 +53,28 @@ public class InitialActivity extends Activity implements View.OnClickListener {
 
             case R.id.loginBTN:
                 loginOnClick();
+                hideKeyboard();
                 break;
 
             case R.id.guestBTN:
                 nextActivity("Guest");
+                hideKeyboard();
                 break;
 
             case R.id.passwordreset:
                 passwordReset();
+                hideKeyboard();
                 break;
         }
 
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+        if(imm.isAcceptingText()) { // verify if the soft keyboard is open
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
     }
 
     private void passwordReset()
