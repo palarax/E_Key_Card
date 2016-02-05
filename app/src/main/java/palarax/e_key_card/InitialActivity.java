@@ -46,7 +46,6 @@ public class InitialActivity extends Activity implements View.OnClickListener {
 
         switch (v.getId()) {
 
-            //TODO: chooks activity
             case R.id.registerBTN:
                 registerOnClick();
                 break;
@@ -57,7 +56,7 @@ public class InitialActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.guestBTN:
-                nextActivity("Guest");
+                nextActivity();
                 hideKeyboard();
                 break;
 
@@ -111,16 +110,15 @@ public class InitialActivity extends Activity implements View.OnClickListener {
             public void handleResponse(BackendlessUser backendlessUser) {
                 super.handleResponse(backendlessUser);
                 BackendlessUser user = Backendless.UserService.CurrentUser();
-                nextActivity((String) user.getProperty("name"));
+                nextActivity();
             }
         });
     }
 
 
 
-    private void nextActivity(String name) {
+    private void nextActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("name",name);
         startActivity(intent);
     }
 

@@ -18,9 +18,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 
 import palarax.e_key_card.CardReader.nfcCard;
 import palarax.e_key_card.QR_code.QrScannerActivity;
+import palarax.e_key_card.UsersManager.profileSettings;
 import palarax.e_key_card.initialActivities.DefaultCallback;
 
 /**
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private nfcCard NFC_card_fragment = new nfcCard();
     private MainFragment home_fragment = new MainFragment();
     private QrScannerActivity QR_scanner = new QrScannerActivity();
+    private profileSettings profile = new profileSettings();
 
 
     @Override
@@ -53,12 +56,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         //Set header name
-        Bundle extras = getIntent().getExtras();
-        if(extras != null) {
-            View headView = navigationView.getHeaderView(0);
-            ((TextView) headView.findViewById(R.id.header_name)).setText(extras.getString("name"));
-
+        View headView = navigationView.getHeaderView(0);
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        if(user != null)
+        {
+            ((TextView) headView.findViewById(R.id.header_name)).setText((String) user.getProperty("name"));
+            ((TextView) headView.findViewById(R.id.header_email)).setText(user.getEmail());
+        }else
+        {
+            ((TextView) headView.findViewById(R.id.header_name)).setText("Guest");
         }
+
+
+
+
 
         //Initial fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -120,8 +131,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     break;
 
             case R.id.nav_manage_tags:
-                    // TODO: manage what the NFC card does
-                    setTitle("MANAGE");
+                    // TODO: manage user accounts [ FUCKBOI - Chooks]
+                    setTitle("MANAGE ACCOUNT");
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_frag, profile);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
                     break;
 
             case R.id.nav_logout:
@@ -150,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         }
         else {
-            super.onBackPressed();
+            logout();
         }
     }
 
