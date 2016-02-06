@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_home:
+                    // TODO: make home screen [ FUCKBOI - Chooks]
                     setTitle("HOME");
                     transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_frag, home_fragment);
