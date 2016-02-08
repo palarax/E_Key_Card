@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -14,7 +13,7 @@ import com.backendless.BackendlessUser;
 import palarax.e_key_card.R;
 
 /**
- * @author
+ * @author Ilya Thai
  */
 public class profileSettings extends Fragment {
 
@@ -28,9 +27,8 @@ public class profileSettings extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
-        test = (TextView) view.findViewById(R.id.test2);
 
-        view.findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.change_name_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 uploadUserData();
@@ -47,10 +45,9 @@ public class profileSettings extends Fragment {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         if(user != null)
         {
-            Toast.makeText(getContext(), "User ID: "+user.getUserId(), Toast.LENGTH_LONG).show();
-            String s = new String(user.getProperty("Tags").toString());
-            test.setText(user.getProperty("Tags").toString());
 
         }
     }
+
+
 }
