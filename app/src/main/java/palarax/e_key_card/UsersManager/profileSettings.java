@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 
 import palarax.e_key_card.R;
 
@@ -33,36 +35,60 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
         view.findViewById(R.id.change_name_btn).setOnClickListener(this);
         view.findViewById(R.id.change_email_btn).setOnClickListener(this);
         view.findViewById(R.id.change_pwd_btn).setOnClickListener(this);
+        fm = getFragmentManager();
 
         return view;
     }
 
-    private void uploadUserData()
+    private void uploadUserData(String data)
     {
         //TODO: upload user UID, geolocation
         //TODO: upload tag name + UID
         BackendlessUser user = Backendless.UserService.CurrentUser();
+
         if(user != null)
         {
-
+            switch (changingFactor)
+            {
+                case "email": user.setEmail(data);  break;
+                case "name" : user.setProperty("name", data);  break;
+                case "password": user.setPassword(data);  break;
+            }
+            updateUser(user);
         }
+    }
+
+    private void updateUser(BackendlessUser user)
+    {
+        Backendless.UserService.update( user, new AsyncCallback<BackendlessUser>()
+        {
+            public void handleResponse( BackendlessUser user )
+            {
+                Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+            }
+
+            public void handleFault( BackendlessFault fault )
+            {
+                Toast.makeText(getContext(), "Fail: "+fault, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.change_name_btn:
-                displayOption("Email: ");
-                changingFactor = "email";
-                break;
-
-            case R.id.change_email_btn:
-                displayOption("Name: ");
+                displayOption("Name:");
                 changingFactor = "name";
                 break;
 
+            case R.id.change_email_btn:
+                displayOption("Email:");
+                changingFactor = "email";
+                break;
+
             case R.id.change_pwd_btn:
-                displayOption("New Password: ");
+                displayOption("New Password:");
                 changingFactor = "password";
                 break;
 
@@ -71,6 +97,8 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
 
     private void displayOption(String mid_text)
     {
+        //Toast.makeText(getContext(), "pwd: "+user.getPassword(), Toast.LENGTH_SHORT).show();
+
         optionDialog = new profileChangeOptionDialog();
         optionDialog.setView(mid_text);
         optionDialog.setListener(this);
@@ -80,27 +108,16 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
 
     @Override
     public void onDone(String inputText) {
-        String email = "";
-        String password = "";
-        String name = "";
 
         if(!inputText.equals("") && changingFactor.equals("email"))
         {
-            email = inputText;
-            Toast.makeText(getContext(), "email: "+email, Toast.LENGTH_SHORT).show();
+            uploadUserData(inputText);
         }
-        else if(!inputText.equals("") && changingFactor.equals("name"))
-        {
-            name = inputText;
-            Toast.makeText(getContext(), "name: "+name, Toast.LENGTH_SHORT).show();
+        else if(!inputText.equals("") && changingFactor.equals("name")) {
+            uploadUserData(inputText);
         }
-        else if(!inputText.equals("") && changingFactor.equals("password"))
-        {
-            password = inputText;
-            Toast.makeText(getContext(), "password: "+password, Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(getContext(), "nothing", Toast.LENGTH_SHORT).show();
+        else if(!inputText.equals("") && changingFactor.equals("password")) {
+            uploadUserData(inputText);
         }
 
     }

@@ -109,7 +109,6 @@ public class InitialActivity extends Activity implements View.OnClickListener {
         Backendless.UserService.login(emailField.getText().toString(), passwordField.getText().toString(), new DefaultCallback<BackendlessUser>(InitialActivity.this) {
             public void handleResponse(BackendlessUser backendlessUser) {
                 super.handleResponse(backendlessUser);
-                BackendlessUser user = Backendless.UserService.CurrentUser();
                 nextActivity();
             }
         });

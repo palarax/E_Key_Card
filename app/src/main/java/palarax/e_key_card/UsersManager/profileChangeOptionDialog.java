@@ -12,7 +12,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
+
 import palarax.e_key_card.R;
+import palarax.e_key_card.initialActivities.DefaultCallback;
 
 /**
  * @author Ilya Thai
@@ -38,9 +42,9 @@ public class profileChangeOptionDialog extends DialogFragment {
     }
 
 
-    public void setView(String mid_text)
-    {
+    public void setView(String mid_text) {
         this.mid_text = mid_text;
+
     }
 
 
@@ -63,28 +67,47 @@ public class profileChangeOptionDialog extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         top.setText(mid_text);
-        mid.setText("Old Password: ");
+        mid.setText("  Old Password:");
+        mid.setTextSize(15);
+        top.setTextSize(15);
 
         TextView btn = (TextView) view.findViewById(R.id.finishOption);
         btn.setText("Update");
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                BackendlessUser user = Backendless.UserService.CurrentUser();
+                String email = user.getEmail();
                 // Perform action on click
                 Log.e(TAG, "button listener");
 
-                if(!write_top.getText().toString().isEmpty())
-                {
+                if (!write_top.getText().toString().isEmpty()) {
                     data = write_top.getText().toString();
-                }else{data="";}
+                } else {
+                    data = "";
+                }
+                if (!write_mid.getText().toString().isEmpty()) {
+                    Backendless.UserService.login(email, write_mid.getText().toString(), new DefaultCallback<BackendlessUser>(getContext()) {
+                        public void handleResponse(BackendlessUser backendlessUser) {
+                            super.handleResponse(backendlessUser);
 
-                if(!write_mid.getText().toString().isEmpty()) //TODO:password check here
-                {
+                            if (!Backendless.UserService.isValidLogin()) {
+                                Toast.makeText(getContext(), "Wrong password", Toast.LENGTH_SHORT).show();
+                                data = "";
+                            }
+
+                        }
+                    });
+                } else {
                     Toast.makeText(getContext(), "Wrong password", Toast.LENGTH_SHORT).show();
-                    data="";
+                    data = "";
                 }
 
-                mListener.onDone(data);
-                dismiss();
+                if (!data.isEmpty()) {
+                    mListener.onDone(data);
+                    dismiss();
+                }
+
             }
         });
         return view;
