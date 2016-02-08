@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import palarax.e_key_card.R;
 
@@ -20,7 +21,7 @@ public class profileChangeOptionDialog extends DialogFragment {
 
     public static final String TAG = "dialog";
     private String mid_text;
-    private String[] data;
+    private String data;
 
     private dialogDoneListener mListener;
 
@@ -33,7 +34,7 @@ public class profileChangeOptionDialog extends DialogFragment {
     }
 
     public interface dialogDoneListener {
-        void onDone(String inputText[]);
+        void onDone(String inputText);
     }
 
 
@@ -65,22 +66,22 @@ public class profileChangeOptionDialog extends DialogFragment {
         mid.setText("Old Password: ");
 
         TextView btn = (TextView) view.findViewById(R.id.finishOption);
-        //set btn text
+        btn.setText("Update");
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
                 Log.e(TAG, "button listener");
-                data = new String [2];
-
-                if(!write_mid.getText().toString().isEmpty())
-                {
-                    data[0] = write_mid.getText().toString();
-                }else{data[0]="";}
 
                 if(!write_top.getText().toString().isEmpty())
                 {
-                    data[1] = write_top.getText().toString();
-                }else{data[1]="";}
+                    data = write_top.getText().toString();
+                }else{data="";}
+
+                if(!write_mid.getText().toString().isEmpty()) //TODO:password check here
+                {
+                    Toast.makeText(getContext(), "Wrong password", Toast.LENGTH_SHORT).show();
+                    data="";
+                }
 
                 mListener.onDone(data);
                 dismiss();
