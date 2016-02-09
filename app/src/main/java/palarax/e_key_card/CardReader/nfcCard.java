@@ -2,11 +2,14 @@ package palarax.e_key_card.CardReader;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -116,6 +119,37 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
             mRecyclerView.setLayoutManager(llm);
             mRecyclerView.setAdapter(cardInfo);
             overwriteMsg = false;
+
+            //synchorize view to update the layout
+            synchronized(this) {
+                FloatingActionButton fab = (FloatingActionButton) mainView.findViewById(R.id.fab);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar snackbar = Snackbar.make(view, "Clear all tags", Snackbar.LENGTH_LONG)
+                                .setAction("Erase", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        cardInfo.clearAll();
+                                        //reset card index
+                                        index = 0;
+                                        Toast.makeText(getContext(), "Cleared all", Toast.LENGTH_SHORT).show();
+                                        //notify layout that the data has changed and it needs to update
+                                        cardInfo.notifyDataSetChanged();
+                                    }
+                                });
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+                        snackbar.show();
+                    }
+                });
+            }
+
         }else if(viewID==R.layout.nfc_write_fragment)
         {
             mainView = inflater.inflate(R.layout.nfc_write_fragment, container, false);
@@ -180,6 +214,10 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
         }
     }
 
+    /**
+     * displays dialog to get user data
+     * @param mid_text  value of the middle line
+     */
     private void displayOption(String mid_text)
     {
         writeOptionDialog = new writeOptionDialog();
@@ -189,6 +227,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
 
     }
 
+    //What happens once Finish button is pressed
     @Override
     public void onDone(String inputText[]) {
         if(!inputText[0].equals(""))
@@ -341,7 +380,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
      * @param tagType   type of tag
      * @param tagSize   tag size
      */
-    public void updateCard(String message,String identification, String technology, String tagType, String tagSize)
+    private void updateCard(String message,String identification, String technology, String tagType, String tagSize)
     {
         final String tech = technology;
         final String ID = identification;

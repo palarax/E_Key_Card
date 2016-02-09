@@ -31,19 +31,31 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.profile_fragment, container, false);
-        view.findViewById(R.id.change_name_btn).setOnClickListener(this);
-        view.findViewById(R.id.change_email_btn).setOnClickListener(this);
-        view.findViewById(R.id.change_pwd_btn).setOnClickListener(this);
-        fm = getFragmentManager();
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        View view;
+        if(user == null)
+        {
+            view = inflater.inflate(R.layout.guest_profile_fragment, container, false);
+        }else
+        {
+            view = inflater.inflate(R.layout.profile_fragment, container, false);
+            view.findViewById(R.id.change_name_btn).setOnClickListener(this);
+            view.findViewById(R.id.change_email_btn).setOnClickListener(this);
+            view.findViewById(R.id.change_pwd_btn).setOnClickListener(this);
+            fm = getFragmentManager();
+        }
+
+
 
         return view;
     }
 
+    /**
+     * Updates user data
+     * @param data  changed value
+     */
     private void uploadUserData(String data)
     {
-        //TODO: upload user UID, geolocation
-        //TODO: upload tag name + UID
         BackendlessUser user = Backendless.UserService.CurrentUser();
 
         if(user != null)
@@ -58,6 +70,10 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
         }
     }
 
+    /**
+     * Updates user
+     * @param user  user instance to be updated
+     */
     private void updateUser(BackendlessUser user)
     {
         Backendless.UserService.update( user, new AsyncCallback<BackendlessUser>()
@@ -95,10 +111,12 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
         }
     }
 
+    /**
+     * displays dialog to get user data
+     * @param mid_text  value of the middle line
+     */
     private void displayOption(String mid_text)
     {
-        //Toast.makeText(getContext(), "pwd: "+user.getPassword(), Toast.LENGTH_SHORT).show();
-
         optionDialog = new profileChangeOptionDialog();
         optionDialog.setView(mid_text);
         optionDialog.setListener(this);
@@ -106,6 +124,7 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
 
     }
 
+    //What happens once Finish button is pressed
     @Override
     public void onDone(String inputText) {
 

@@ -34,14 +34,20 @@ public class profileChangeOptionDialog extends DialogFragment {
     }
 
     public profileChangeOptionDialog() {
-
     }
 
+    /**
+     * listens for the onDone
+     */
     public interface dialogDoneListener {
         void onDone(String inputText);
     }
 
 
+    /**
+     * sets mid_text as it determines the view
+     * @param mid_text  middle value
+     */
     public void setView(String mid_text) {
         this.mid_text = mid_text;
 
@@ -54,6 +60,7 @@ public class profileChangeOptionDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.write_options_dialog, container);
 
+        //hiding bottom line since we aren't using it
         EditText write_bot = (EditText) view.findViewById(R.id.dialog_write_bot);
         TextView bot = (TextView) view.findViewById(R.id.dialog_text_bot);
         bot.setVisibility(View.INVISIBLE);
@@ -66,6 +73,10 @@ public class profileChangeOptionDialog extends DialogFragment {
         final EditText write_mid = (EditText) view.findViewById(R.id.dialog_write_mid);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        ViewGroup.MarginLayoutParams params=(ViewGroup.MarginLayoutParams)top.getLayoutParams();
+        params.topMargin=150;   //putting the layout in the middle
+
+        top.setLayoutParams(params);
         top.setText(mid_text);
         mid.setText("  Old Password:");
         mid.setTextSize(15);
@@ -86,7 +97,10 @@ public class profileChangeOptionDialog extends DialogFragment {
                 } else {
                     data = "";
                 }
+
                 if (!write_mid.getText().toString().isEmpty()) {
+
+                    //checks if password matches user's password
                     Backendless.UserService.login(email, write_mid.getText().toString(), new DefaultCallback<BackendlessUser>(getContext()) {
                         public void handleResponse(BackendlessUser backendlessUser) {
                             super.handleResponse(backendlessUser);
