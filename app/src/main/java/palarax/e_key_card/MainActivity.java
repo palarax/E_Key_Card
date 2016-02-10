@@ -68,9 +68,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-
-
-
         //Initial fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         MainFragment fragment = new MainFragment();

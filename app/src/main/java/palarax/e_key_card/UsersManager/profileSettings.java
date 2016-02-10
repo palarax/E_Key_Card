@@ -18,10 +18,10 @@ import palarax.e_key_card.R;
 /**
  * @author Ilya Thai
  */
-public class profileSettings extends Fragment implements View.OnClickListener,palarax.e_key_card.UsersManager.profileChangeOptionDialog.dialogDoneListener{
+public class profileSettings extends Fragment implements View.OnClickListener, palarax.e_key_card.UsersManager.profileChangeOptionDialog.dialogDoneListener {
 
     private profileChangeOptionDialog optionDialog;
-    private FragmentManager fm ;
+    private FragmentManager fm;
     private String changingFactor = "";
 
     public profileSettings() {
@@ -33,19 +33,17 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
                              Bundle savedInstanceState) {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         View view;
-        if(user == null)
-        {
+        if (user == null) {
             view = inflater.inflate(R.layout.guest_profile_fragment, container, false);
-        }else
-        {
+        } else {
             view = inflater.inflate(R.layout.profile_fragment, container, false);
             view.findViewById(R.id.change_name_btn).setOnClickListener(this);
             view.findViewById(R.id.change_email_btn).setOnClickListener(this);
             view.findViewById(R.id.change_pwd_btn).setOnClickListener(this);
+
             fm = getFragmentManager();
         }
-
-
+        view.findViewById(R.id.btn4).setOnClickListener(this);
 
         return view;
     }
@@ -54,17 +52,20 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
      * Updates user data
      * @param data  changed value
      */
-    private void uploadUserData(String data)
-    {
+    private void uploadUserData(String data) {
         BackendlessUser user = Backendless.UserService.CurrentUser();
 
-        if(user != null)
-        {
-            switch (changingFactor)
-            {
-                case "email": user.setEmail(data);  break;
-                case "name" : user.setProperty("name", data);  break;
-                case "password": user.setPassword(data);  break;
+        if (user != null) {
+            switch (changingFactor) {
+                case "email":
+                    user.setEmail(data);
+                    break;
+                case "name":
+                    user.setProperty("name", data);
+                    break;
+                case "password":
+                    user.setPassword(data);
+                    break;
             }
             updateUser(user);
         }
@@ -74,18 +75,14 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
      * Updates user
      * @param user  user instance to be updated
      */
-    private void updateUser(BackendlessUser user)
-    {
-        Backendless.UserService.update( user, new AsyncCallback<BackendlessUser>()
-        {
-            public void handleResponse( BackendlessUser user )
-            {
+    private void updateUser(BackendlessUser user) {
+        Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
+            public void handleResponse(BackendlessUser user) {
                 Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
             }
 
-            public void handleFault( BackendlessFault fault )
-            {
-                Toast.makeText(getContext(), "Fail: "+fault, Toast.LENGTH_SHORT).show();
+            public void handleFault(BackendlessFault fault) {
+                Toast.makeText(getContext(), "Fail: " + fault, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -108,6 +105,10 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
                 changingFactor = "password";
                 break;
 
+            case R.id.btn4:
+                test();
+                break;
+
         }
     }
 
@@ -115,8 +116,7 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
      * displays dialog to get user data
      * @param mid_text  value of the middle line
      */
-    private void displayOption(String mid_text)
-    {
+    private void displayOption(String mid_text) {
         optionDialog = new profileChangeOptionDialog();
         optionDialog.setView(mid_text);
         optionDialog.setListener(this);
@@ -128,16 +128,19 @@ public class profileSettings extends Fragment implements View.OnClickListener,pa
     @Override
     public void onDone(String inputText) {
 
-        if(!inputText.equals("") && changingFactor.equals("email"))
-        {
+        if (!inputText.equals("") && changingFactor.equals("email")) {
+            uploadUserData(inputText);
+        } else if (!inputText.equals("") && changingFactor.equals("name")) {
+            uploadUserData(inputText);
+        } else if (!inputText.equals("") && changingFactor.equals("password")) {
             uploadUserData(inputText);
         }
-        else if(!inputText.equals("") && changingFactor.equals("name")) {
-            uploadUserData(inputText);
-        }
-        else if(!inputText.equals("") && changingFactor.equals("password")) {
-            uploadUserData(inputText);
-        }
-
     }
+
+    private void test() {
+
+    Toast.makeText(getContext(), "test: ", Toast.LENGTH_SHORT).show();
+    }
+
+
 }

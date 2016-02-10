@@ -1,8 +1,8 @@
 package palarax.e_key_card.entities;
 
+
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
-import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.geo.GeoPoint;
 import com.backendless.persistence.BackendlessDataQuery;
@@ -14,27 +14,25 @@ public class tags
     private String tagName;
     private java.util.Date updated;
     private String ownerId;
-    private BackendlessUser owner;
     private GeoPoint lastLocation;
-
     public java.util.Date getCreated()
     {
         return created;
     }
 
-    public String gettagName()
+    public String getObjectId()
+    {
+        return objectId;
+    }
+
+    public String getTagName()
     {
         return tagName;
     }
 
-    public void settagName(String tagName)
+    public void setTagName( String tagName )
     {
         this.tagName = tagName;
-    }
-
-    public String getObjectId()
-    {
-        return objectId;
     }
 
     public java.util.Date getUpdated()
@@ -45,16 +43,6 @@ public class tags
     public String getOwnerId()
     {
         return ownerId;
-    }
-
-    public BackendlessUser getOwner()
-    {
-        return owner;
-    }
-
-    public void setOwner( BackendlessUser owner )
-    {
-        this.owner = owner;
     }
 
     public GeoPoint getLastLocation()

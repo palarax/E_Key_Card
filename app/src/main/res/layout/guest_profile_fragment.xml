@@ -33,6 +33,17 @@
             android:layout_centerInParent="true"
             />
 
+        <Button
+            android:id="@+id/btn4"
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:background="@drawable/read_barcode_btn"
+            android:text="test"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/change_sign"
+            android:layout_marginTop="40dp"
+            />
 
     </RelativeLayout>
 

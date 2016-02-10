@@ -57,7 +57,7 @@ public class testClass {
                 while( iterator.hasNext() )
                 {
                     tags restaurant=iterator.next();
-                    System.out.println( "Restaurant name = " + restaurant.gettagName() );
+                    System.out.println( "Restaurant name = " + restaurant.getTagName() );
                 }
 
             }
@@ -74,6 +74,7 @@ public class testClass {
     }
 
 
+    //cycles through tags and finds users
     private void findUserTags(final String objectID)
     {
         Backendless.Persistence.of(tags.class).find(new AsyncCallback<BackendlessCollection<tags>>() {
@@ -84,10 +85,10 @@ public class testClass {
                 while (tagIterator.hasNext()) {
                     tags tag = tagIterator.next();
                     System.out.println("owner: "+objectID);
-                    System.out.println("owner: "+tag.gettagName());
-                    if(tag.getOwner() != null) {
-                        if (tag.getOwner().getObjectId().equals(objectID)) {
-                            s += tag.gettagName() + " ";
+                    System.out.println("owner: "+tag.getTagName());
+                    if(tag.getOwnerId() != null) {
+                        if (tag.getOwnerId().equals(objectID)) {
+                            s += tag.getTagName() + " ";
                         }
                     }
                 }
@@ -99,6 +100,27 @@ public class testClass {
                 // an error has occurred, the error code can be retrieved with fault.getCode()
             }
         });
+    }
 
+    public void cycleThroughUsers() {
+        Backendless.Data.of(BackendlessUser.class).find(new AsyncCallback<BackendlessCollection<BackendlessUser>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<BackendlessUser> users) {
+                Iterator<BackendlessUser> userIterator = users.getCurrentPage().iterator();
+
+                while (userIterator.hasNext()) {
+                    BackendlessUser user = userIterator.next();
+                    System.out.println("Email - " + user.getEmail());
+                    System.out.println("User ID - " + user.getUserId());
+                    System.out.println("Phone Number - " + user.getProperty("phoneNumber"));
+                    System.out.println("============================");
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                System.out.println("Server reported an error - " + backendlessFault.getMessage());
+            }
+        });
     }
 }
