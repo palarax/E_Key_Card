@@ -44,6 +44,8 @@ dependencies {
     compile files('libs/backendless.jar')
     //custom progress dialog
     compile 'com.github.d-max:spots-dialog:0.4@aar'
+    //location
+    compile 'io.nlopez.smartlocation:library:3.2.1'
 }
 
 apt {

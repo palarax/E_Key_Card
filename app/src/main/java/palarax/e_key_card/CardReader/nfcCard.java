@@ -14,11 +14,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,20 +29,22 @@ import palarax.e_key_card.NFC_Tag_Tech.nfcATag;
 import palarax.e_key_card.R;
 import palarax.e_key_card.adapters.CardObject;
 import palarax.e_key_card.adapters.RecyclerAdapter_Scroller;
+import palarax.e_key_card.adapters.helper.OnStartDragListener;
+import palarax.e_key_card.adapters.helper.SimpleItemTouchHelperCallback;
 import palarax.e_key_card.adapters.newDialog;
 
 /**
  * @author Ilya Thai
  */
-public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,View.OnClickListener, palarax.e_key_card.CardReader.writeOptionDialog.dialogDoneListener {
+public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,View.OnClickListener, palarax.e_key_card.CardReader.writeOptionDialog.dialogDoneListener, OnStartDragListener {
 
+    private ItemTouchHelper mItemTouchHelper;
     public static final String TAG = "NFC_Card";
     public static final int MSG_RECORD = 1;
     public static final int MSG_OVERWRITE = 2;
     public static final int MSG_CLEAR = 0;
 
     private View mainView;          //Main view displayed
-    private ViewGroup rootView;     // "container" of where mainView is located
     private int viewID, index;
     private RecyclerAdapter_Scroller cardInfo ;
 
@@ -51,14 +53,8 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
     private int msgOption;
     private boolean overwriteMsg = false; //boolean to check if a "overwrite" message is ready to be sent
 
-    private Button nfcOverwriteBtn, nfcclearBtn, nfcaddrecordbtn; //nfc write function button
-
     private FragmentManager fm ;
     private newDialog editNameDialog;
-    private writeOptionDialog writeOptionDialog;
-
-    //Card and Recycler layout
-    private RecyclerView mRecyclerView;
 
     // Recommend NfcAdapter flags for reading from other Android devices. Indicates that this
     // activity is interested in NFC-A devices (including other Android devices), and that the
@@ -73,7 +69,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        cardInfo = new RecyclerAdapter_Scroller(getDataSet());
+        cardInfo = new RecyclerAdapter_Scroller(getDataSet(),this,getContext());
         index = 0;
         cardInfo.clearAll();
         super.onCreate(savedInstanceState);
@@ -113,11 +109,16 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
         if(viewID==R.layout.nfc_details_fragment) {
 
             mainView = inflater.inflate(R.layout.nfc_details_fragment, container, false);
-            mRecyclerView = (RecyclerView) mainView.findViewById(R.id.recyclerList);
-            LinearLayoutManager llm = new LinearLayoutManager(getContext());
-            llm.setOrientation(LinearLayoutManager.VERTICAL);
-            mRecyclerView.setLayoutManager(llm);
+            RecyclerView mRecyclerView = (RecyclerView) mainView.findViewById(R.id.recyclerList);
+            //LinearLayoutManager llm = new LinearLayoutManager(getContext());
+            mRecyclerView.setHasFixedSize(true);
+            //llm.setOrientation(LinearLayoutManager.VERTICAL);
+            //mRecyclerView.setLayoutManager(llm);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.setAdapter(cardInfo);
+            ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(cardInfo);
+            mItemTouchHelper = new ItemTouchHelper(callback);
+            mItemTouchHelper.attachToRecyclerView(mRecyclerView);
             overwriteMsg = false;
 
             //synchorize view to update the layout
@@ -153,18 +154,15 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
         }else if(viewID==R.layout.nfc_write_fragment)
         {
             mainView = inflater.inflate(R.layout.nfc_write_fragment, container, false);
-            nfcOverwriteBtn = (Button) mainView.findViewById(R.id.overwriteNFCbtn);
-            nfcaddrecordbtn = (Button) mainView.findViewById(R.id.writeRecordBtn);
-            nfcclearBtn = (Button) mainView.findViewById(R.id.clearBtn);
             fm = getFragmentManager();
             mainView.findViewById(R.id.vcard).setOnClickListener(this);
             mainView.findViewById(R.id.plainMessage).setOnClickListener(this);
             mainView.findViewById(R.id.teleNumber).setOnClickListener(this);
             mainView.findViewById(R.id.link).setOnClickListener(this);
 
-            nfcOverwriteBtn.setOnClickListener(this);
-            nfcaddrecordbtn.setOnClickListener(this);
-            nfcclearBtn.setOnClickListener(this);
+            mainView.findViewById(R.id.overwriteNFCbtn).setOnClickListener(this);
+            mainView.findViewById(R.id.writeRecordBtn).setOnClickListener(this);
+            mainView.findViewById(R.id.clearBtn).setOnClickListener(this);
         } else {
             Log.e(TAG,"ViewID null");
         }
@@ -220,7 +218,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
      */
     private void displayOption(String mid_text)
     {
-        writeOptionDialog = new writeOptionDialog();
+        palarax.e_key_card.CardReader.writeOptionDialog writeOptionDialog = new writeOptionDialog();
         writeOptionDialog.setView(mid_text);
         writeOptionDialog.setListener(this);
         writeOptionDialog.show(fm, "option_dialog");
@@ -275,7 +273,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
         //create a root view to change the main view
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(id, ((ViewGroup)getView().getParent()), false);
-        rootView = (ViewGroup) getView();
+        ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         choosingView(inflater, rootView);
         rootView.addView(mainView);
@@ -453,6 +451,12 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
     public void onResume() {
         super.onResume();
         enableReaderMode();
+    }
+
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 
 }
