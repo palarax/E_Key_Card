@@ -1,9 +1,6 @@
 package palarax.e_key_card.adapters;
 
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,11 +24,10 @@ public class RecyclerAdapter_Scroller extends RecyclerView.Adapter<FeedCardHolde
     private List<CardObject> feedItemList ;  //Cards are created here
     private View view;
     private final OnStartDragListener mDragStartListener;
-    private Context mContext;
+    private int indexCount = 0;
 
 
-    public RecyclerAdapter_Scroller(List<CardObject> feedItemList,OnStartDragListener dragStartListener,Context context) {
-            mContext=context;
+    public RecyclerAdapter_Scroller(List<CardObject> feedItemList,OnStartDragListener dragStartListener) {
             mDragStartListener = dragStartListener;
             this.feedItemList = feedItemList;
     }
@@ -46,12 +42,20 @@ public class RecyclerAdapter_Scroller extends RecyclerView.Adapter<FeedCardHolde
 
 
     @Override
-    public void onBindViewHolder(final FeedCardHolder holder, int position) {
+    public void onBindViewHolder(final FeedCardHolder holder, final int position) {
         holder.ID.setText(feedItemList.get(position).getID());
         holder.tech.setText(feedItemList.get(position).getTech());
         holder.type.setText(feedItemList.get(position).getType());
         holder.message.setText(feedItemList.get(position).getMsg());
         holder.size.setText(feedItemList.get(position).getSize());
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteItem(holder.getAdapterPosition());
+            }
+        });
+
         holder.itemView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -62,20 +66,6 @@ public class RecyclerAdapter_Scroller extends RecyclerView.Adapter<FeedCardHolde
                 return false;
             }
         });
-    }
-
-    public void createDialog()
-    {
-        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-        alertDialog.setTitle("Alert");
-        alertDialog.setMessage("Alert message to be shown");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
     }
 
     /**
@@ -106,18 +96,22 @@ public class RecyclerAdapter_Scroller extends RecyclerView.Adapter<FeedCardHolde
     public void addItem(CardObject dataObj, int index) {
         feedItemList.add(index, dataObj);
         notifyItemInserted(index);
+        indexCount++;
     }
 
     public void deleteItem(int index) {
         if(!feedItemList.isEmpty()){
             feedItemList.remove(index);
             notifyItemRemoved(index);
+            indexCount--;
         }
+
     }
 
     public void clearAll()
     {
         feedItemList.clear();
+        indexCount = 0;
     }
 
     @Override
@@ -129,17 +123,23 @@ public class RecyclerAdapter_Scroller extends RecyclerView.Adapter<FeedCardHolde
         }
     }
 
-    @Override
-    public void onItemDismiss(int position) {
-        feedItemList.remove(position);
-        notifyItemRemoved(position);
-    }
+
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
         Collections.swap(feedItemList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
         return true;
+    }
+
+    public int getIndexCount()
+    {
+        return indexCount;
+    }
+
+    public void setIndexCount(int index)
+    {
+        this.indexCount = index;
     }
 
 

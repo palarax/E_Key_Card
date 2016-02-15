@@ -3,6 +3,7 @@ package palarax.e_key_card.adapters;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import palarax.e_key_card.R;
@@ -19,6 +20,7 @@ public class FeedCardHolder extends RecyclerView.ViewHolder implements ItemTouch
     protected TextView type;
     protected TextView message;
     protected TextView size;
+    protected Button delete;
 
 
     public FeedCardHolder(View view) {
@@ -29,6 +31,7 @@ public class FeedCardHolder extends RecyclerView.ViewHolder implements ItemTouch
         this.type = (TextView) view.findViewById(R.id.tagType_text);
         this.message = (TextView) view.findViewById(R.id.tagMessage_text);
         this.size = (TextView) view.findViewById(R.id.tagSize_text);
+        this.delete = (Button) view.findViewById(R.id.delete_card);
     }
 
     private void sync()

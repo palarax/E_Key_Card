@@ -136,6 +136,15 @@
             android:layout_alignBaseline="@+id/tagSize"
             android:layout_toEndOf="@+id/tagSize" />
 
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@color/zxing_transparent"
+            android:drawableLeft="@drawable/delete"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:id="@+id/delete_card" />
+
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -45,12 +45,11 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
     public static final int MSG_CLEAR = 0;
 
     private View mainView;          //Main view displayed
-    private int viewID, index;
+    private int viewID,msgOption;
     private RecyclerAdapter_Scroller cardInfo ;
 
     private String msgType, msgRecord;
 
-    private int msgOption;
     private boolean overwriteMsg = false; //boolean to check if a "overwrite" message is ready to be sent
 
     private FragmentManager fm ;
@@ -69,8 +68,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        cardInfo = new RecyclerAdapter_Scroller(getDataSet(),this,getContext());
-        index = 0;
+        cardInfo = new RecyclerAdapter_Scroller(getDataSet(),this);
         cardInfo.clearAll();
         super.onCreate(savedInstanceState);
     }
@@ -132,8 +130,6 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
                                     @Override
                                     public void onClick(View v) {
                                         cardInfo.clearAll();
-                                        //reset card index
-                                        index = 0;
                                         Toast.makeText(getContext(), "Cleared all", Toast.LENGTH_SHORT).show();
                                         //notify layout that the data has changed and it needs to update
                                         cardInfo.notifyDataSetChanged();
@@ -393,8 +389,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
                 int position = cardInfo.exists(ID);
                 if (position == -2) {
                     //doest the card exist
-                    cardInfo.addItem(new CardObject(ID, type, tech, msg, size), index);
-                    index++;
+                    cardInfo.addItem(new CardObject(ID, type, tech, msg, size), cardInfo.getIndexCount());
                 } else {
                     //update object
                     cardInfo.updateCard(position, ID, msg, tech, type, size);
