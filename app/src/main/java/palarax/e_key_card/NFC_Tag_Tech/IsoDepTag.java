@@ -72,7 +72,7 @@ public class IsoDepTag {
 
         try {
             return new RequestHandler(this.mTagTech, by, arrby).start();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG,"exception in RequestHandler");
         }
         return null;

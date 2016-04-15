@@ -3,6 +3,7 @@ package palarax.e_key_card.adapters;
 
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +49,17 @@ public class RecyclerAdapter_Scroller extends RecyclerView.Adapter<FeedCardHolde
         holder.type.setText(feedItemList.get(position).getType());
         holder.message.setText(feedItemList.get(position).getMsg());
         holder.size.setText(feedItemList.get(position).getSize());
+        Log.e(TAG,"serial #: "+feedItemList.get(position).getSerialNumber());
+        if(feedItemList.get(position).getSerialNumber().equals("none"))
+        {
+            holder.serialNumber.setVisibility(View.INVISIBLE);
+            holder.serialNumber_label.setVisibility(View.INVISIBLE);
+        }else{ holder.serialNumber.setText(feedItemList.get(position).getSerialNumber()); }
+        if(feedItemList.get(position).getBalance().equals("none"))
+        {
+            holder.balance.setVisibility(View.INVISIBLE);
+            holder.balance_label.setVisibility(View.INVISIBLE);
+        }else {holder.balance.setText(feedItemList.get(position).getBalance());}
 
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,13 +96,15 @@ public class RecyclerAdapter_Scroller extends RecyclerView.Adapter<FeedCardHolde
         return -2;
     }
 
-    public void updateCard(int position,String ID, String msg, String tech, String type, String size)
+    public void updateCard(int position,String ID, String msg, String tech, String type, String size,CharSequence serialID,CharSequence balance)
     {
         feedItemList.get(position).setID(ID);
         feedItemList.get(position).setMsg(msg);
         feedItemList.get(position).setTech(tech);
         feedItemList.get(position).setType(type);
         feedItemList.get(position).setSize(size);
+        feedItemList.get(position).setBalance(balance);
+        feedItemList.get(position).setSerialNumber(serialID);
     }
 
     public void addItem(CardObject dataObj, int index) {

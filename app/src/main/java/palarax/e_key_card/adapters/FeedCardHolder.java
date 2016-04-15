@@ -20,7 +20,12 @@ public class FeedCardHolder extends RecyclerView.ViewHolder implements ItemTouch
     protected TextView type;
     protected TextView message;
     protected TextView size;
+    protected TextView serialNumber;
+    protected TextView balance;
     protected Button delete;
+
+    protected TextView balance_label;
+    protected TextView serialNumber_label;
 
 
     public FeedCardHolder(View view) {
@@ -32,6 +37,11 @@ public class FeedCardHolder extends RecyclerView.ViewHolder implements ItemTouch
         this.message = (TextView) view.findViewById(R.id.tagMessage_text);
         this.size = (TextView) view.findViewById(R.id.tagSize_text);
         this.delete = (Button) view.findViewById(R.id.delete_card);
+        this.serialNumber = (TextView) view.findViewById(R.id.opalNumber_text);
+        this.balance = (TextView) view.findViewById(R.id.opalBalance_text);
+
+        this.balance_label =(TextView) view.findViewById(R.id.opalBalance);
+        this.serialNumber_label =(TextView) view.findViewById(R.id.opalNumber);
     }
 
     private void sync()

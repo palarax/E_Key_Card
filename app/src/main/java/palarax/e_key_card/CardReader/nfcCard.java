@@ -42,8 +42,6 @@ import palarax.e_key_card.entities.OpalCard;
  */
 public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,View.OnClickListener, palarax.e_key_card.CardReader.writeOptionDialog.dialogDoneListener, OnStartDragListener {
 
-
-
     private ItemTouchHelper mItemTouchHelper;
     public static final String TAG = "NFC_Card";
     public static final int MSG_RECORD = 1;
@@ -83,7 +81,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
     private ArrayList<CardObject> getDataSet() {
         //Replace this code with the scanned data
         ArrayList results = new ArrayList<>();
-        CardObject obj = new CardObject("-1", "-1","-1","-1","-1");
+        CardObject obj = new CardObject("-1", "-1","-1","-1","-1","-1","-1");
         results.add(0, obj);
         return results;
     }
@@ -333,6 +331,8 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
         ArrayList msgRecords = new ArrayList<>();
         String tagSize = "";
         String message = "";
+        CharSequence serialNumber = "none";
+        CharSequence balance = "none";
         //Look through tech
         for (String singleTech : techList) {
             //selected only Ndef and NdefFormatable techs
@@ -380,16 +380,18 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
                     IsoDepTag isotech = new IsoDepTag(isoDep);
                     //get data
                     OpalCard opalcard = DataFactory.parseData(isotech.readFile(FREE_READ_FILE_NUMBER));
-                    opalcard.print();
-                }catch (Exception e){Log.e(TAG,"problems with isoDep connection");}
-                finally {
+                    serialNumber = opalcard.getFormattedCardNumber();
+                    balance = opalcard.getFormattedCardBalance();
+                } catch (Exception e) {
+                    Log.e(TAG, "problems with isoDep connection");
+                } finally {
                     isoDep.close();
                 }
             }
 
         }
         //update information in Scan cards
-        updateCard(message, ID, tech, type, tagSize);
+        updateCard(message, ID, tech, type, tagSize,serialNumber,balance);
     }
 
 
@@ -401,13 +403,16 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
      * @param tagType   type of tag
      * @param tagSize   tag size
      */
-    private void updateCard(String message,String identification, String technology, String tagType, String tagSize)
+    private void updateCard(String message,String identification, String technology, String tagType, String tagSize,CharSequence serialNumber,CharSequence balance)
     {
         final String tech = technology;
         final String ID = identification;
         final String type = tagType;
         final String msg = message;
         final String size = tagSize;
+        final CharSequence opalID = serialNumber;
+        final CharSequence opalBalance = balance;
+        Log.e(TAG,"OPAL ID: "+opalID);
 
         //Update information
         getActivity().runOnUiThread(new Runnable() {
@@ -416,10 +421,10 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
                 int position = cardInfo.exists(ID);
                 if (position == -2) {
                     //doest the card exist
-                    cardInfo.addItem(new CardObject(ID, type, tech, msg, size), cardInfo.getIndexCount());
+                    cardInfo.addItem(new CardObject(ID, type, tech, msg, size,opalID,opalBalance), cardInfo.getIndexCount());
                 } else {
                     //update object
-                    cardInfo.updateCard(position, ID, msg, tech, type, size);
+                    cardInfo.updateCard(position, ID, msg, tech, type, size,opalID,opalBalance);
                     cardInfo.notifyDataSetChanged();
                 }
             }

@@ -74,11 +74,11 @@ public class RequestHandler {
         return this.mTag.transceive(this.wrapInstruction(ADDITIONAL_FRAME, var3));
     }
 
-    public byte[] start() throws IOException {
+    public byte[] start() throws Exception {
         return this.start(null);
     }
 
-    public byte[] start(SecureMessagingHandler var1) throws IOException {
+    public byte[] start(SecureMessagingHandler var1) throws Exception {
         ByteArrayOutputStream var2 = new ByteArrayOutputStream();
         byte[] var3 = this.getNextFrameParameters();
         if(var1 != null) {
@@ -127,6 +127,7 @@ public class RequestHandler {
                     break;
                 default:
                     Log.e(TAG,"Such exception, many WOW");
+                    throw new Exception();
             }
         } while(!this.mOperationComplete);
 

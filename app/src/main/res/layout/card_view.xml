@@ -24,7 +24,7 @@
             android:text="@string/ID"
             android:textColor="@android:color/white"
             android:layout_marginTop="30dp"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="70dp"
             android:layout_alignParentStart="true"/>
 
         <TextView
@@ -111,6 +111,54 @@
             android:layout_alignBaseline="@+id/tagMessage"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/tagMessage" />
+
+        <TextView
+            android:id="@+id/opalNumber"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/opalNumber"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/tagMessage"
+            android:layout_alignEnd="@+id/tagMessage" />
+
+        <TextView
+            android:id="@+id/opalNumber_text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/opalNumber_text"
+            android:layout_alignBaseline="@+id/opalNumber"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/opalNumber" />
+
+        <TextView
+            android:id="@+id/opalBalance"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/opalBalance"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/opalNumber"
+            android:layout_alignEnd="@+id/opalNumber" />
+
+        <TextView
+            android:id="@+id/opalBalance_text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/opalBalance_text"
+            android:layout_alignBaseline="@+id/opalBalance"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/opalBalance" />
 
         <TextView
             android:id="@+id/tagSize"

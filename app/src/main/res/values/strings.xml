@@ -46,6 +46,10 @@
     <string name="tagMessage_text"><i>no message detected</i></string>
     <string name="tagSize">Tag size: </string>
     <string name="tagSize_text">undefined</string>
+    <string name="opalNumber">Serial Number: </string>
+    <string name="opalNumber_text">undefined</string>
+    <string name="opalBalance">Balance: </string>
+    <string name="opalBalance_text">undefined</string>
 
     <!-- Tag information  -->
     <string name="tag_overwrite">Overwrite </string>

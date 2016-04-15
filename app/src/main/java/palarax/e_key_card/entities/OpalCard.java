@@ -1,7 +1,5 @@
 package palarax.e_key_card.entities;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Locale;
@@ -33,14 +31,6 @@ public class OpalCard implements Serializable{
             this.mFrequencyOfUse = n4;
             this.mCRC = n5;
         }
-
-    public void print()
-    {
-        Log.d("OpalCard","SerialNumebr: "+getFormattedCardNumber());
-        Log.d("OpalCard","Balance1: "+mCurrentBalance);
-        Log.d("OpalCard","Balance2: "+getFormattedCardBalance());
-        Log.d("OpalCard","Date&Time: "+mDateAndTimeOfLastTag);
-    }
 
     public int getCRC() {
         return this.mCRC;
