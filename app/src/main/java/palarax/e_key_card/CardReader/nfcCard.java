@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.IsoDep;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import palarax.e_key_card.NFC_Tag_Tech.IsoDepTag;
 import palarax.e_key_card.NFC_Tag_Tech.NdefTag;
 import palarax.e_key_card.NFC_Tag_Tech.nfcATag;
 import palarax.e_key_card.R;
@@ -32,17 +34,22 @@ import palarax.e_key_card.adapters.RecyclerAdapter_Scroller;
 import palarax.e_key_card.adapters.helper.OnStartDragListener;
 import palarax.e_key_card.adapters.helper.SimpleItemTouchHelperCallback;
 import palarax.e_key_card.adapters.newDialog;
+import palarax.e_key_card.entities.DataFactory;
+import palarax.e_key_card.entities.OpalCard;
 
 /**
  * @author Ilya Thai
  */
 public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,View.OnClickListener, palarax.e_key_card.CardReader.writeOptionDialog.dialogDoneListener, OnStartDragListener {
 
+
+
     private ItemTouchHelper mItemTouchHelper;
     public static final String TAG = "NFC_Card";
     public static final int MSG_RECORD = 1;
     public static final int MSG_OVERWRITE = 2;
     public static final int MSG_CLEAR = 0;
+    private static final int FREE_READ_FILE_NUMBER = 7;
 
     private View mainView;          //Main view displayed
     private int viewID,msgOption;
@@ -312,7 +319,7 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
      * @param tag tag scanned
      */
     @Override
-    public void onAccountReceived(Tag tag) {
+    public void onAccountReceived(Tag tag) throws Exception {
         Log.i(TAG,"AccountReceived");
         // This callback is run on a background thread, but updates to UI elements must be performed
         // on the UI thread.
@@ -360,6 +367,26 @@ public class nfcCard extends Fragment implements nfcCardReader.AccountCallback,V
                 }catch (NullPointerException e) {message = "";}
                 break;
             }
+
+            if (singleTech.equals(IsoDep.class.getName())) {
+                IsoDep isoDep = IsoDep.get(tag);
+                if (tag.getId().length != 7) {
+                    throw new Exception("Verify UID length failed. ");
+                }
+                try {
+                    // connect to isoDep
+                    isoDep.connect();
+                    //set up isoDep
+                    IsoDepTag isotech = new IsoDepTag(isoDep);
+                    //get data
+                    OpalCard opalcard = DataFactory.parseData(isotech.readFile(FREE_READ_FILE_NUMBER));
+                    opalcard.print();
+                }catch (Exception e){Log.e(TAG,"problems with isoDep connection");}
+                finally {
+                    isoDep.close();
+                }
+            }
+
         }
         //update information in Scan cards
         updateCard(message, ID, tech, type, tagSize);

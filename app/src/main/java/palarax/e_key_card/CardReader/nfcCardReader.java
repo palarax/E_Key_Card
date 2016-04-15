@@ -18,7 +18,7 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
     private WeakReference<AccountCallback> mAccountCallback;
 
     public interface AccountCallback {
-         void onAccountReceived(Tag tag);
+         void onAccountReceived(Tag tag) throws Exception;
     }
 
     public nfcCardReader(AccountCallback accountCallback) {
@@ -35,7 +35,11 @@ public class nfcCardReader implements NfcAdapter.ReaderCallback {
     @Override
     public void onTagDiscovered(Tag tag) {
         Log.e(TAG, "New tag discovered");
-        mAccountCallback.get().onAccountReceived(tag);
+        try {
+            mAccountCallback.get().onAccountReceived(tag);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
