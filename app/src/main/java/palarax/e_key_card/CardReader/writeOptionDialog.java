@@ -74,7 +74,7 @@ public class writeOptionDialog extends DialogFragment{
         }else
         {
             top.setText("NAME:");
-            mid.setText("MOBILE");
+            mid.setText("MOBILE:");
             bot.setText(mid_text);
             write_mid.setInputType(InputType.TYPE_CLASS_PHONE);
         }

@@ -15,10 +15,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 
 import palarax.e_key_card.CardReader.nfcCard;
 import palarax.e_key_card.QR_code.QrScannerActivity;
+import palarax.e_key_card.UsersManager.profileSettings;
+import palarax.e_key_card.initialActivities.DefaultCallback;
 
 /**
  * @author Ilya Thai
@@ -30,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private nfcCard NFC_card_fragment = new nfcCard();
     private MainFragment home_fragment = new MainFragment();
     private QrScannerActivity QR_scanner = new QrScannerActivity();
+    private profileSettings profile = new profileSettings();
 
 
     @Override
@@ -38,9 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         //create a drawer layout menu
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -49,6 +55,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Set header name
+        View headView = navigationView.getHeaderView(0);
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        if(user != null)
+        {
+            ((TextView) headView.findViewById(R.id.header_name)).setText((String) user.getProperty("name"));
+            ((TextView) headView.findViewById(R.id.header_email)).setText(user.getEmail());
+        }else
+        {
+            ((TextView) headView.findViewById(R.id.header_name)).setText("Guest");
+        }
+
+
+        //Initial fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         MainFragment fragment = new MainFragment();
         transaction.replace(R.id.main_frag, fragment);
@@ -64,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_home:
-                    // TODO: create a main screen
+                    // TODO: make home screen [ FUCKBOI - Chooks]
                     setTitle("HOME");
                     transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_frag, home_fragment);
@@ -90,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     break;
 
             case R.id.nav_write:
-                    // TODO: finish write to NFC
                     setTitle("WRITE");
                     //Set the correct layout since WRITE/SCAN are both using nfcCard
                     try {
@@ -110,9 +129,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     break;
 
             case R.id.nav_manage_tags:
-                    // TODO: manage what the NFC card does
-                    setTitle("MANAGE");
+                    // TODO: manage user accounts [ FUCKBOI - Chooks]
+                    setTitle("MANAGE ACCOUNT");
+                    transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_frag, profile);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
                     break;
+
+            case R.id.nav_logout:
+                logout();
+                break;
 
             case  R.id.nav_qr:
 
@@ -136,10 +163,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         }
         else {
-            super.onBackPressed();
+            logout();
         }
     }
 
+    private void logout()
+    {
+        Backendless.initApp(this, BackEndlessDefaults.APPLICATION_ID, BackEndlessDefaults.SECRET_KEY, BackEndlessDefaults.VERSION); // where to get the argument values for this call
+        Backendless.UserService.logout(new DefaultCallback<Void>(MainActivity.this) {
+            @Override
+            public void handleResponse(Void response) {
+                super.handleResponse(response);
+                finish();
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,20 +200,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Fragment that appears in the main screen
-     */
     public static class MainFragment extends Fragment {
 
         public MainFragment() {
             // Empty constructor required for fragment subclasses
+
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             getActivity().setTitle("HOME");
-            return inflater.inflate(R.layout.content_main, container, false);
+            return inflater.inflate(R.layout.home_fragment, container, false);
         }
     }
 }

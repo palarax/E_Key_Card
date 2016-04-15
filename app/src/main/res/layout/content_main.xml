@@ -3,32 +3,126 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-
     android:layout_gravity="center">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="palarax.e_key_card.MainActivity"
-        tools:showIn="@layout/app_bar_main">
+        android:background="@drawable/background">
 
         <TextView
-            android:id="@+id/home"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold"
+            android:id="@+id/HOME"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nav_home"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="30dp"
-            android:layout_marginStart="25dp"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:textStyle="bold"
+            android:text="HOME"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/white" />
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:inputType="textEmailAddress"
+                android:hint="E-mail"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:layout_marginEnd="10dp"
+                android:textSize="15dp" />
+
+            <Button
+                android:id="@+id/guestBTN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/registerLbl"
+                android:background="@android:color/transparent"
+                android:text="Guest Login"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/passwordreset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/guestBTN"
+                android:background="@android:color/transparent"
+                android:text="Password reset"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/loginBTN"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/password"
+                android:background="@drawable/button_shape_login" />
+
+            <Button
+                android:id="@+id/registerBTN"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_below="@+id/password"
+                android:background="@drawable/button_shape_register" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignLeft="@+id/email"
+                android:layout_below="@+id/email"
+                android:layout_marginEnd="10dp"
+                android:ems="10"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/registerLbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/loginLbl"
+                android:layout_alignEnd="@+id/registerBTN"
+                android:layout_alignRight="@+id/registerBTN"
+                android:layout_below="@+id/registerBTN"
+                android:text="Create new account."
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/loginLbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/loginBTN"
+                android:layout_alignRight="@+id/loginBTN"
+                android:layout_below="@+id/loginBTN"
+                android:text="For existing users only."
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/darker_gray" />
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 </FrameLayout>
+

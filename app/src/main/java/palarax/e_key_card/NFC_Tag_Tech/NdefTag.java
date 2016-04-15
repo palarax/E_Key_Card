@@ -1,6 +1,5 @@
 package palarax.e_key_card.NFC_Tag_Tech;
 
-import android.net.Uri;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -9,15 +8,11 @@ import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  * @author Ilya Thai
  */
@@ -58,7 +53,7 @@ public class NdefTag {
 
     /**
      *
-     * @param record
+     * @param record NdefRecord to be read
      * @return message from tag
      * @throws UnsupportedEncodingException
      */
@@ -75,7 +70,7 @@ public class NdefTag {
             // Get the Text
             Log.i(TAG, textEncoding);
             return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
-        }catch (ArrayIndexOutOfBoundsException e){}
+        }catch (ArrayIndexOutOfBoundsException e){Log.i(TAG,"Error: "+e);}
         return "";
     }
 
@@ -188,8 +183,7 @@ public class NdefTag {
         System.arraycopy(langBytes, 0, payload, 1, langLength);
         System.arraycopy(textBytes, 0, payload, 1 + langLength, textLength);
 
-        NdefRecord recordNFC = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], payload);
-        return recordNFC;
+        return new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], payload);
     }
 
     public String getSize(Tag tag)
