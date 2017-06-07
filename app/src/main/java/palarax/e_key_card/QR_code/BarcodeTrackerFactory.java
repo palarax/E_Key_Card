@@ -15,10 +15,11 @@
  */
 package palarax.e_key_card.QR_code;
 
-import palarax.e_key_card.QR_code.camera.GraphicOverlay;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.barcode.Barcode;
+
+import palarax.e_key_card.QR_code.camera.GraphicOverlay;
 
 /**
  * Factory for creating a tracker and associated graphic to be associated with a new barcode.  The

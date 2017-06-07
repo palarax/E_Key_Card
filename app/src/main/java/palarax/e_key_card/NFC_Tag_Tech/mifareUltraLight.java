@@ -3,7 +3,6 @@ package palarax.e_key_card.NFC_Tag_Tech;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.Tag;
-import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.util.Log;
 
